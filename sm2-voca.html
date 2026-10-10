@@ -205,6 +205,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16p
 .lhead .btns{margin-left:auto;display:flex;gap:5px}
 .lmini{white-space:nowrap;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:3px 9px;font-size:12px;cursor:pointer;letter-spacing:0;font-family:var(--sans)}
 .lhint{color:var(--sub);font-size:12.5px;margin:-4px 2px 8px}
+.lmp3{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px dashed var(--line);border-radius:10px;padding:8px 10px;margin:0 0 10px;font-size:12.5px;color:var(--sub)}
+.lmp3 button{border:1px solid var(--line);background:#fff8e6;border-radius:12px;padding:5px 12px;font-size:13px;cursor:pointer;font-family:var(--sans)}
 .litem{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer}
 .litem input{width:18px;height:18px;flex:none;accent-color:#1c1b19}
 .litem .lw2{font-family:var(--serif);font-weight:600;font-size:16px;flex:none}
@@ -5706,6 +5708,7 @@ function rListen(v){
           <button class="lmini" id="lall">전체</button><button class="lmini" id="lnone">해제</button>
           <button class="lmini" id="lstar">★만</button><button class="lmini" id="lwrong">틀린 것만</button></span></div>
       <div class="lhint">체크된 단어만 들려줘요. 들으면서 외운 단어는 '외웠어요 ✓'를 누르면 빠지고, 다음엔 안 외워진 단어만 남아요.</div>
+      <div class="lmp3"><button id="lcopy">📋 MP3 목록 복사</button><span id="lcmsg">체크된 단어를 복사해요 → 학원 컴퓨터 'MP3 만들기' 프로그램에 붙여넣기</span></div>
       <div id="llist">${words.map((w,i) => `
         <label class="litem" data-w="${esc(w.word)}"><input type="checkbox" ${sel.has(w.word)?"checked":""}>
           <span class="lw2">${esc(w.word)}</span><span class="lm2">${esc(w.mean)}</span>${spkBtn(w.word)}</label>`).join("")}</div>
@@ -5723,6 +5726,21 @@ function rListen(v){
   $("lnone").onclick = () => setAll([]);
   $("lstar").onclick = () => setAll(words.filter(w => stars.has(w.word)).map(w => w.word));
   $("lwrong").onclick = () => setAll(words.filter(w => wrongs.has(w.word)).map(w => w.word));
+  $("lcopy").onclick = () => {
+    const list = words.filter(w => sel.has(w.word));
+    const msg = t => { $("lcmsg").textContent = t; };
+    if(!list.length) return msg("체크된 단어가 없어요.");
+    const text = list.map(w => w.word + "\t" + w.mean).join("\n");
+    const done = () => msg("✓ " + list.length + "단어 복사됨 — 프로그램 '단어 목록 붙여넣기' 칸에 붙여넣으세요.");
+    const fallback = () => {
+      const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch(e) {}
+      document.body.removeChild(ta); ok ? done() : msg("복사가 막혀 있어요. 단어 목록을 길게 눌러 직접 복사해 주세요.");
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  };
   app.querySelectorAll(".lopt").forEach(b => b.onclick = () => {
     const k = b.dataset.k; let val = b.dataset.v;
     val = (val === "true") ? !LS[k] : (isNaN(+val) ? val : +val);
