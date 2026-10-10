@@ -165,6 +165,24 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16p
   .mode-btn .nm{font-size:12.5px}
 }
 
+
+/* 실전 33번형 */
+.rtag{font-size:12.5px;color:var(--gold);font-weight:700;letter-spacing:.5px;margin-bottom:10px}
+.rl{display:flex;gap:8px;font-family:var(--serif);font-size:18px;line-height:1.55;margin:8px 0}
+.rl.rex{font-size:16px}
+.rl .rb{color:var(--gold);flex:none}
+.rl .blank{display:inline-block;min-width:80px;border-bottom:2px solid var(--gold);margin:0 4px;height:1.1em;vertical-align:baseline}
+.rl .blank.filled{height:auto}
+.qbox .blank.filled{color:var(--ok);font-weight:700;border-bottom-color:var(--ok);min-width:0;padding:0 2px}
+.rboxes{display:flex;flex-wrap:wrap;gap:3px;align-items:center;margin-top:14px;padding-top:10px;border-top:1px dashed var(--line)}
+.rboxes i{width:20px;height:24px;border:1.5px solid #8c8474;border-radius:3px;background:#fff}
+.rboxes b{font-family:var(--serif);font-size:16px;padding:0 2px}.rboxes b.sp{width:8px}
+.rboxes .rlen{margin-left:8px;font-size:12.5px;color:var(--sub)}
+.rin{display:flex;gap:8px;margin-bottom:8px}
+.rin input{flex:1;min-width:0;font-size:20px;font-family:var(--serif);padding:12px 14px;border:1.5px solid #2c2b28;border-radius:10px;background:var(--card)}
+.rin input.bad{border-color:var(--no);background:#f7e6e1}
+.rin .gbtn{margin:0}
+.rmsg{text-align:center;font-size:16px;margin-top:10px;min-height:24px}
 /* 발음 · 듣기 */
 .spk{border:none;background:none;font-size:15px;cursor:pointer;padding:2px 4px;vertical-align:middle;opacity:.75}
 .spk:active{transform:scale(.9)}
@@ -5190,6 +5208,18 @@ function blankOut(text, word){
     : escRe(s);
   const re = new RegExp("\\b" + onesRe(word) + "\\w*", "i");
   if(re.test(text)) return esc(text).replace(re, '<span class="blank"></span>');
+  const VAR = {sizeable:"sizable", "trial-and-error":"trial and error"};
+  if(VAR[word]){ const rv = new RegExp("\\b" + escRe(VAR[word]) + "\\w*", "i"); if(rv.test(text)) return esc(text).replace(rv, '<span class="blank"></span>'); }
+  const IRR = {keep:"kept", get:"got|gotten", take:"took|taken", make:"made", give:"gave|given", run:"ran", lay:"laid", go:"went|gone", fall:"fell|fallen", break:"broke|broken", drive:"drove|driven", strike:"struck", stand:"stood", become:"became", have:"has|had", mistake:"mistook|mistaken", leave:"left", be:"am|is|are|was|were|been|being"};
+  if(word.includes(" ")){
+    const parts = word.split(/\s+/).filter(t => !/^[AB~]$/.test(t)).map(t => {
+      if(t === "oneself") return "(?:oneself|myself|yourself|himself|herself|itself|ourselves|yourselves|themselves)";
+      const base = escRe(t).replace(/e$/, "e?") + "\\w*";
+      return IRR[t] ? "(?:" + base + "|" + IRR[t] + ")" : base;
+    });
+    const re3 = new RegExp("\\b" + parts.join("(?:\\s+\\S+){0,3}?\\s+"), "i");
+    if(re3.test(text)) return esc(text).replace(re3, '<span class="blank"></span>');
+  }
   if(word.includes(" ")){
     // A/B 자리표시자는 아무 단어나 허용, 각 단어는 어간+굴절형(-ed, -ing 등)까지 매칭
     const part = t => t.includes("one's") ? onesRe(t) + "\\w*" : escRe(t).replace(/e$/, "e?") + "\\w*";
@@ -5247,6 +5277,16 @@ function qContext(words){ // 문맥 뜻 구분: 다의어 구문 → 알맞은 �
   });
   return shuffle(qs);
 }
+function qReal(words){ // 실전(중간 33번형): 콜로케이션 2개(해석 없음) + 기출 예문(해석) 공통 빈칸 → 단어 쓰기
+  const pool = words.filter(w => (w.col && w.col.length) || (w.ex && w.ex.length));
+  return shuffle(pool).map(w => ({
+    type:"real", w,
+    cols:(w.col||[]).slice(0,2).map(c => blankOut(c[0], w.word)),
+    ex:(w.ex||[]).slice(0,1).map(e => ({en:blankOut(e[0], w.word), ko:e[1]})),
+    answer:w.word
+  }));
+}
+const normAns = t => String(t).toLowerCase().replace(/\[(\w+)\]/g,"$1").replace(/\b(a|b)\b/g," ").replace(/[^a-z]/g,"");
 function qSynAnt(words, n){ // 유·반의어: 두 단어 관계 판단
   const qs = [];
   words.forEach(w => {
@@ -5369,7 +5409,8 @@ function rDay(day){
     {id:"def",   ic:"Aa",        nm:"영영 빈칸", ok:hasDef},
     {id:"ctx",   ic:"&#x2696;",  nm:"문맥 뜻 구분", ok:hasCtx},
     {id:"rel",   ic:"&#x21c4;",  nm:"유·반의어", ok:hasRel},
-    {id:"listen",ic:"&#x1f3a7;", nm:"듣기", ok:true}
+    {id:"listen",ic:"&#x1f3a7;", nm:"듣기", ok:true},
+    {id:"real",  ic:"&#x1f4dd;", nm:"실전(33번형)", ok:hasEx}
   ];
   app.innerHTML = bar("DAY "+day, {name:"home"}, true) + `
     <div class="wrap">
@@ -5391,7 +5432,8 @@ function rDay(day){
       ex:{qs:qExample(words), t:"예문"},
       def:{qs:qDef(words), t:"영영 빈칸"},
       ctx:{qs:qContext(words), t:"문맥 뜻 구분"},
-      rel:{qs:qSynAnt(words,20), t:"유·반의어"}
+      rel:{qs:qSynAnt(words,20), t:"유·반의어"},
+      real:{qs:qReal(words), t:"실전 33번형"}
     }[m];
     go({name:"quiz", kind:m, qs:map.qs, i:0, right:0, wrong:0, title:"DAY "+day+" · "+map.t, backTo:back});
   });
@@ -5431,7 +5473,18 @@ function rQuiz(v){
   if(v.i >= v.qs.length) return go({name:"result", from:v});
   const q = v.qs[v.i];
   let box = "", ask = "", opts = "";
-  if(q.type==="test"){
+  if(q.type==="real"){
+    const L = "ABC";
+    const lines = [...q.cols.map(h => `<div class="rl"><span class="rb">•</span><span>${h}</span></div>`),
+                   ...q.ex.map(e => `<div class="rl rex"><span class="rb">•</span><span>${e.en}<div class="qko">(${esc(e.ko)})</div></span></div>`)].join("");
+    const len = q.answer.replace(/[^A-Za-z]/g,"").length;
+    box = `<div class="rtag">세 문장의 빈칸에 공통으로 들어갈 단어</div>${lines}
+      <div class="rboxes">${q.answer.split("").map(ch => /[A-Za-z]/.test(ch) ? '<i></i>' : (ch===" " ? '<b class="sp"></b>' : `<b>${esc(ch)}</b>`)).join("")}<span class="rlen">${len}글자</span></div>`;
+    ask = `빈칸에 들어갈 단어를 <b>원형</b>으로 쓰세요 <span style="font-size:12px">(시제·수는 바꾸지 않음)</span>`;
+    opts = `<div class="rin"><input id="rinput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="영어로 쓰기"><button class="gbtn" id="rok">확인</button></div>
+      <div style="text-align:center"><button class="gbtn line" id="rhint">첫 글자 힌트</button><button class="gbtn line" id="rgive">모르겠어요</button></div>
+      <div id="rmsg" class="rmsg"></div>`;
+  } else if(q.type==="test"){
     box = `<div class="qword">${esc(q.prompt)} ${spkBtn(q.prompt)}</div>`;
     ask = `알맞은 뜻을 고르세요`;
     opts = q.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("");
@@ -5462,6 +5515,31 @@ function rQuiz(v){
       <div class="qask">${ask}</div>
       ${opts}
     </div>`;
+  if(q.type==="real"){
+    const inp = document.getElementById("rinput"), msg = document.getElementById("rmsg");
+    let hinted = false, done = false;
+    setTimeout(() => { try { inp.focus(); } catch(e){} }, 50);
+    const finish = correct => {
+      if(done) return; done = true;
+      inp.disabled = true; ["rok","rhint","rgive"].forEach(id => document.getElementById(id).disabled = true);
+      msg.innerHTML = correct ? `<span style="color:var(--ok)">정답! <b>${esc(q.answer)}</b> — ${esc(q.w.mean)}</span>`
+                              : `<span style="color:var(--no)">정답: <b>${esc(q.answer)}</b> — ${esc(q.w.mean)}</span>`;
+      app.querySelectorAll(".qbox .blank").forEach(b => { b.textContent = q.answer; b.classList.add("filled"); });
+      if(!correct){ wrongs.add(q.w.word); saveWrongs(); } else if(v.kind === "wrongReview"){ wrongs.delete(q.w.word); saveWrongs(); }
+      setTimeout(() => go({...v, i:v.i+1, right:v.right+(correct?1:0), wrong:v.wrong+(correct?0:1)}), correct ? 1300 : 2600);
+    };
+    const check = () => {
+      if(!inp.value.trim()) return;
+      if(normAns(inp.value) === normAns(q.answer)) finish(true);
+      else { inp.classList.add("bad"); msg.innerHTML = `<span style="color:var(--no)">다시 생각해 보세요</span>`; setTimeout(()=>inp.classList.remove("bad"), 500);
+             if(hinted) finish(false); else hinted = "tried"; }
+    };
+    document.getElementById("rok").onclick = check;
+    inp.onkeydown = e => { if(e.key === "Enter") check(); };
+    document.getElementById("rhint").onclick = () => { hinted = true; inp.value = q.answer[0]; inp.focus(); msg.innerHTML = `<span style="color:var(--sub)">첫 글자: <b>${esc(q.answer[0])}</b> · 한 번 더 틀리면 오답 처리</span>`; };
+    document.getElementById("rgive").onclick = () => finish(false);
+    return;
+  }
   const btns = [...app.querySelectorAll(".opt")];
   btns.forEach(btn => btn.onclick = () => {
     btns.forEach(b => b.disabled = true);
