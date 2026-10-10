@@ -164,6 +164,35 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16p
   .mode-btn{padding:16px 4px 12px}
   .mode-btn .nm{font-size:12.5px}
 }
+
+/* 발음 · 듣기 */
+.spk{border:none;background:none;font-size:15px;cursor:pointer;padding:2px 4px;vertical-align:middle;opacity:.75}
+.spk:active{transform:scale(.9)}
+.qword .spk,.flash .fw .spk{font-size:20px}
+.lnow{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 18px;margin:14px 0 12px;text-align:center;box-shadow:0 1px 3px rgba(60,50,20,.06)}
+.lnow .lw{font-family:var(--serif);font-size:34px;font-weight:600}
+.lnow .lm{color:#5c4a1c;font-size:17px;font-weight:600;margin-top:8px}
+.lnow .lc{color:var(--sub);font-size:12.5px;margin-top:8px}
+.lctl{display:grid;grid-template-columns:1fr 1.4fr 1fr 1.6fr;gap:8px;margin-bottom:12px}
+.lctl button{background:var(--card);border:1.5px solid #2c2b28;border-radius:10px;padding:13px 6px;font-size:18px;cursor:pointer;font-family:var(--sans)}
+.lctl button.main{background:#1c1b19;color:#fff}
+.lctl button.known{font-size:14px;font-weight:700;color:var(--ok);border-color:#9cc5a6}
+.lset{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.lrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0}
+.lrow>span{width:38px;font-size:12.5px;color:var(--sub);font-weight:600}
+.lopt{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:5px 11px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.lopt.on{background:#1c1b19;color:#fff;border-color:#1c1b19}
+.lhead{display:flex;align-items:center;gap:8px;margin:22px 2px 8px;font-weight:700;font-size:14.5px;color:#3f3a2e}
+.lhead b{color:var(--gold)}
+.lhead .btns{margin-left:auto;display:flex;gap:5px}
+.lmini{white-space:nowrap;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:3px 9px;font-size:12px;cursor:pointer;letter-spacing:0;font-family:var(--sans)}
+.lhint{color:var(--sub);font-size:12.5px;margin:-4px 2px 8px}
+.litem{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer}
+.litem input{width:18px;height:18px;flex:none;accent-color:#1c1b19}
+.litem .lw2{font-family:var(--serif);font-weight:600;font-size:16px;flex:none}
+.litem .lm2{color:var(--sub);font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.litem.cur{border-color:var(--gold);background:#f6efd9}
+@media (max-width:430px){.lnow .lw{font-size:28px}.lctl button{font-size:16px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -5230,7 +5259,7 @@ function qSynAnt(words, n){ // 유·반의어: 두 단어 관계 판단
 /* ---------------- 라우팅 ---------------- */
 const app = document.getElementById("app");
 let view = { name:"home" };
-function go(v){ view = v; render(); window.scrollTo(0,0); }
+function go(v){ if(view && view.name==="listen" && typeof stopListen==="function") stopListen(); view = v; render(); window.scrollTo(0,0); }
 function render(){
   if(view.name==="home") rHome();
   else if(view.name==="day") rDay(view.day);
@@ -5238,6 +5267,7 @@ function render(){
   else if(view.name==="quiz") rQuiz(view);
   else if(view.name==="result") rResult(view);
   else if(view.name==="starred") rStarred();
+  else if(view.name==="listen") rListen(view);
 }
 function bar(title, backTo, serif){
   return `<div class="topbar">
@@ -5289,8 +5319,15 @@ function rHome(){
         <div class="tx"><b>저장한 단어 복습</b><span>단어 옆 ★를 누르면 여기 모여요 · ${stars.size}개</span></div><span class="arr">&#x203a;</span></div>
       <div class="tool-row" id="t-wrong"><div class="ic" style="color:var(--no)">&#x21ba;</div>
         <div class="tx"><b>틀린 단어 복습</b><span>테스트에서 틀린 단어가 자동으로 모여요 · ${wrongs.size}개</span></div><span class="arr">&#x203a;</span></div>
+      <div class="tool-row" id="t-listen"><div class="ic">&#x1f3a7;</div>
+        <div class="tx"><b>★·틀린 단어 듣기</b><span>저장한 단어와 틀린 단어를 영어·뜻·영어로 들려줘요</span></div><span class="arr">&#x203a;</span></div>
       <div class="footer">${CONFIG.footer}</div>
     </div>`;
+  document.getElementById("t-listen").onclick = () => {
+    const ws = [...new Set([...stars, ...wrongs])].map(byWord).filter(Boolean);
+    if(!ws.length) return alert("★ 저장한 단어나 틀린 단어가 아직 없습니다.");
+    go({name:"listen", words:ws, key:"review", title:"★·틀린 단어 듣기", backTo:{name:"home"}});
+  };
   app.querySelectorAll(".day-card").forEach(el => el.onclick = () => go({name:"day", day:+el.dataset.day}));
   document.getElementById("t-rel").onclick = () => {
     if(!relTotal) return alert("유·반의어 자료가 아직 없습니다.");
@@ -5313,7 +5350,7 @@ function wordCardHTML(w, idx){
   const der = (w.der&&w.der.length)?`<div class="tagline"><span class="lbl">파생어</span>${w.der.map(d=>`<b>${esc(d[0])}</b> ${esc(d[1])}`).join(" · ")}</div>`:"";
   return `<div class="wcard" data-w="${esc(w.word)}">
     <div class="head"><div class="idx">${idx}</div>
-      <div class="wd"><div class="w">${esc(w.word)}</div><div class="m">${esc(w.mean)}</div></div>
+      <div class="wd"><div class="w">${esc(w.word)} ${spkBtn(w.word)}</div><div class="m">${esc(w.mean)}</div></div>
       ${starBtn(w.word)}</div>
     <div class="body"><span class="mean-hl">${esc(w.mean)}</span>
       ${defs?`<div class="defs">${defs}</div>`:""}${pairs}${syn}${ant}${der}</div>
@@ -5331,7 +5368,8 @@ function rDay(day){
     {id:"ex",    ic:"&#x201c;",  nm:"예문 학습", ok:hasEx},
     {id:"def",   ic:"Aa",        nm:"영영 빈칸", ok:hasDef},
     {id:"ctx",   ic:"&#x2696;",  nm:"문맥 뜻 구분", ok:hasCtx},
-    {id:"rel",   ic:"&#x21c4;",  nm:"유·반의어", ok:hasRel}
+    {id:"rel",   ic:"&#x21c4;",  nm:"유·반의어", ok:hasRel},
+    {id:"listen",ic:"&#x1f3a7;", nm:"듣기", ok:true}
   ];
   app.innerHTML = bar("DAY "+day, {name:"home"}, true) + `
     <div class="wrap">
@@ -5347,6 +5385,7 @@ function rDay(day){
   app.querySelectorAll(".mode-btn").forEach(el => el.onclick = () => {
     const m = el.dataset.m;
     if(m==="cards") return go({name:"cards", day, i:0, title:"DAY "+day+" · 카드", backTo:back});
+    if(m==="listen") return go({name:"listen", words, key:"d"+day, title:"DAY "+day+" · 듣기", backTo:back});
     const map = {
       test:{qs:qTest(words), t:"테스트"},
       ex:{qs:qExample(words), t:"예문"},
@@ -5368,7 +5407,7 @@ function rCards(v){
       <div class="progress"><i style="width:${(v.i+1)/words.length*100}%"></i></div>
       <div class="meta">${v.i+1} / ${words.length}</div>
       <div class="flash" id="flash">${starBtn(w.word)}
-        <div class="fw">${esc(w.word)}</div>
+        <div class="fw">${esc(w.word)} ${spkBtn(w.word)}</div>
         ${(w.defs&&w.defs.length)?`<div class="fd">${esc(w.defs[0])}</div>`:""}
         <div class="fm">${esc(w.mean)}</div>
         ${pairs?`<div class="fsub">${pairs}</div>`:""}
@@ -5393,7 +5432,7 @@ function rQuiz(v){
   const q = v.qs[v.i];
   let box = "", ask = "", opts = "";
   if(q.type==="test"){
-    box = `<div class="qword">${esc(q.prompt)}</div>`;
+    box = `<div class="qword">${esc(q.prompt)} ${spkBtn(q.prompt)}</div>`;
     ask = `알맞은 뜻을 고르세요`;
     opts = q.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("");
   } else if(q.type==="ex"){
@@ -5492,6 +5531,173 @@ function rStarred(){
   app.querySelectorAll(".wcard .head").forEach(el => el.onclick = () => el.parentElement.classList.toggle("open"));
   document.getElementById("s-cards").onclick = () => go({name:"cards", words:ws, i:0, title:"저장한 단어 · 카드", backTo:{name:"starred"}});
   document.getElementById("s-test").onclick = () => go({name:"quiz", kind:"test", qs:qTest(ws), i:0, right:0, wrong:0, title:"저장한 단어 · 테스트", backTo:{name:"starred"}});
+}
+
+/* ---------------- 발음 (기기 내장 음성) ---------------- */
+const TTS = (() => {
+  const ok = typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
+  let voices = [];
+  const load = () => { try { voices = speechSynthesis.getVoices() || []; } catch(e){ voices = []; } };
+  if(ok){ load(); try { speechSynthesis.onvoiceschanged = load; } catch(e){} }
+  const pick = lang => {
+    const L = voices.filter(v => (v.lang||"").toLowerCase().replace("_","-").startsWith(lang));
+    return L.find(v => /premium|enhanced|natural|siri/i.test(v.name)) || L.find(v => /samantha|yuna|google/i.test(v.name)) || L[0] || null;
+  };
+  function say(text, lang, rate){
+    return new Promise(res => {
+      if(!ok || !text) return res();
+      let done = false; const fin = () => { if(!done){ done = true; res(); } };
+      try {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = lang === "en" ? "en-US" : "ko-KR";
+        const v = pick(lang === "en" ? "en" : "ko"); if(v) u.voice = v;
+        u.rate = rate || 1; u.onend = fin; u.onerror = fin;
+        speechSynthesis.speak(u);
+        setTimeout(fin, 4000 + text.length * 260);   // 일부 기기에서 onend가 안 오는 경우 대비
+      } catch(e){ fin(); }
+    });
+  }
+  return { ok, say, stop(){ try { if(ok) speechSynthesis.cancel(); } catch(e){} } };
+})();
+const koSpeak = m => String(m).replace(/[~∼…]/g, " ").replace(/[\[\]()]/g, " ").replace(/;/g, ",").replace(/\s+/g, " ").trim();
+function speakWord(word){ TTS.stop(); TTS.say(word, "en", 0.9); }
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest(".spk");
+  if(!b) return;
+  e.stopPropagation(); e.preventDefault();
+  speakWord(b.dataset.w);
+}, true);
+function spkBtn(word){ return `<button class="spk" data-w="${esc(word)}" aria-label="발음 듣기">&#x1f50a;</button>`; }
+
+/* ---------------- 듣기 모드 ---------------- */
+const LDEF = { order:"eke", rate:0.9, rep:1, gap:0.8, shuffle:false, loop:false };
+let LS = Object.assign({}, LDEF, store.get("listen", {}));
+const saveLS = () => store.set("listen", LS);
+let LP = null;          // 재생 토큰
+let wakeLock = null;
+async function keepAwake(on){
+  try {
+    if(on && navigator.wakeLock && !wakeLock){ wakeLock = await navigator.wakeLock.request("screen"); }
+    if(!on && wakeLock){ await wakeLock.release(); wakeLock = null; }
+  } catch(e){ wakeLock = null; }
+}
+const wait = s => new Promise(r => setTimeout(r, s * 1000));
+function stopListen(){ LP = null; TTS.stop(); keepAwake(false); }
+
+function rListen(v){
+  stopListen();
+  const words = v.words;
+  const key = v.key ? "lsel_" + v.key : null;
+  let saved = key ? store.get(key, null) : null;
+  const sel = new Set(saved && saved.length ? saved.filter(w => words.some(x => x.word === w)) : words.map(w => w.word));
+  const saveSel = () => { if(key) store.set(key, [...sel]); };
+  let queue = [], qi = 0, playing = false;
+
+  const opt = (k, val, label) => `<button class="lopt ${LS[k]===val?"on":""}" data-k="${k}" data-v="${val}">${label}</button>`;
+  app.innerHTML = bar(v.title, v.backTo) + `
+    <div class="wrap">
+      ${TTS.ok ? "" : `<div class="empty" style="padding:20px">이 기기·브라우저는 음성 읽기를 지원하지 않아요.<br>아이패드 사파리나 크롬에서 열어 주세요.</div>`}
+      <div class="lnow" id="lnow"><div class="lw" id="lw">▶ 를 누르면 시작해요</div><div class="lm" id="lm">&nbsp;</div><div class="lc" id="lc"></div></div>
+      <div class="lctl">
+        <button id="lprev">&#x23ee;</button>
+        <button id="lplay" class="main">&#x25b6;</button>
+        <button id="lnext">&#x23ed;</button>
+        <button id="lknown" class="known">외웠어요 ✓</button>
+      </div>
+      <div class="lset">
+        <div class="lrow"><span>순서</span>${opt("order","eke","영어·뜻·영어")}${opt("order","ek","영어·뜻")}${opt("order","ke","뜻·영어")}</div>
+        <div class="lrow"><span>속도</span>${opt("rate",0.7,"느리게")}${opt("rate",0.9,"보통")}${opt("rate",1.1,"빠르게")}</div>
+        <div class="lrow"><span>반복</span>${opt("rep",1,"1번")}${opt("rep",2,"2번")}${opt("rep",3,"3번")}</div>
+        <div class="lrow"><span>간격</span>${opt("gap",0.4,"짧게")}${opt("gap",0.8,"보통")}${opt("gap",1.6,"길게")}</div>
+        <div class="lrow"><span>기타</span>${opt("shuffle",true,"섞기")}${opt("loop",true,"계속 반복")}</div>
+      </div>
+      <div class="lhead">들을 단어 <b id="lcnt"></b>
+        <span class="btns">
+          <button class="lmini" id="lall">전체</button><button class="lmini" id="lnone">해제</button>
+          <button class="lmini" id="lstar">★만</button><button class="lmini" id="lwrong">틀린 것만</button></span></div>
+      <div class="lhint">체크된 단어만 들려줘요. 들으면서 외운 단어는 '외웠어요 ✓'를 누르면 빠지고, 다음엔 안 외워진 단어만 남아요.</div>
+      <div id="llist">${words.map((w,i) => `
+        <label class="litem" data-w="${esc(w.word)}"><input type="checkbox" ${sel.has(w.word)?"checked":""}>
+          <span class="lw2">${esc(w.word)}</span><span class="lm2">${esc(w.mean)}</span>${spkBtn(w.word)}</label>`).join("")}</div>
+      <div class="footer">${CONFIG.footer}</div>
+    </div>`;
+  const $ = id => document.getElementById(id);
+  const cnt = () => { $("lcnt").textContent = sel.size + " / " + words.length; };
+  const syncChecks = () => app.querySelectorAll(".litem").forEach(el => { el.querySelector("input").checked = sel.has(el.dataset.w); });
+  cnt();
+  app.querySelectorAll(".litem input").forEach(cb => cb.onchange = () => {
+    const w = cb.closest(".litem").dataset.w; cb.checked ? sel.add(w) : sel.delete(w); saveSel(); cnt();
+  });
+  const setAll = list => { sel.clear(); list.forEach(w => sel.add(w)); saveSel(); syncChecks(); cnt(); };
+  $("lall").onclick = () => setAll(words.map(w => w.word));
+  $("lnone").onclick = () => setAll([]);
+  $("lstar").onclick = () => setAll(words.filter(w => stars.has(w.word)).map(w => w.word));
+  $("lwrong").onclick = () => setAll(words.filter(w => wrongs.has(w.word)).map(w => w.word));
+  app.querySelectorAll(".lopt").forEach(b => b.onclick = () => {
+    const k = b.dataset.k; let val = b.dataset.v;
+    val = (val === "true") ? !LS[k] : (isNaN(+val) ? val : +val);
+    LS[k] = val; saveLS();
+    app.querySelectorAll(`.lopt[data-k="${k}"]`).forEach(x => x.classList.toggle("on", (x.dataset.v === "true") ? LS[k] === true : String(LS[k]) === x.dataset.v));
+  });
+
+  const buildQueue = () => {
+    queue = words.filter(w => sel.has(w.word));
+    if(LS.shuffle) queue = shuffle(queue);
+    qi = 0;
+  };
+  const show = w => {
+    $("lw").textContent = w ? w.word : "끝!";
+    $("lm").textContent = w ? w.mean : (sel.size ? "다시 들으려면 ▶" : "체크된 단어가 없어요");
+    $("lc").textContent = w ? (qi + 1) + " / " + queue.length : "";
+    app.querySelectorAll(".litem").forEach(el => el.classList.toggle("cur", !!w && el.dataset.w === w.word));
+    const cur = w && app.querySelector(`.litem[data-w="${CSS.escape ? CSS.escape(w.word) : w.word}"]`);
+    if(cur && cur.scrollIntoView) cur.scrollIntoView({block:"nearest", behavior:"smooth"});
+  };
+  const setPlayBtn = () => { $("lplay").innerHTML = playing ? "&#x23f8;" : "&#x25b6;"; };
+
+  async function run(){
+    const tok = {}; LP = tok; playing = true; setPlayBtn(); keepAwake(true);
+    while(LP === tok){
+      if(qi >= queue.length){
+        if(LS.loop && sel.size){ buildQueue(); continue; }
+        break;
+      }
+      const w = queue[qi];
+      if(!sel.has(w.word)){ qi++; continue; }
+      show(w);
+      for(let r = 0; r < LS.rep && LP === tok; r++){
+        const steps = LS.order === "eke" ? ["e","k","e"] : LS.order === "ek" ? ["e","k"] : ["k","e"];
+        for(const s of steps){
+          if(LP !== tok) break;
+          await TTS.say(s === "e" ? w.word : koSpeak(w.mean), s === "e" ? "en" : "ko", LS.rate);
+          if(LP !== tok) break;
+          await wait(LS.gap * 0.6);
+        }
+        if(LP === tok) await wait(LS.gap);
+      }
+      if(LP === tok) qi++;
+    }
+    if(LP === tok){ LP = null; playing = false; setPlayBtn(); keepAwake(false); if(qi >= queue.length){ show(null); buildQueue(); } }
+  }
+  $("lplay").onclick = () => {
+    if(playing){ stopListen(); playing = false; setPlayBtn(); return; }
+    if(!sel.size) return alert("들을 단어를 체크해 주세요.");
+    if(!queue.length || qi >= queue.length) buildQueue();
+    run();
+  };
+  const jump = d => {
+    if(!queue.length) buildQueue();
+    qi = Math.max(0, Math.min(queue.length - 1, qi + d));
+    if(playing){ stopListen(); run(); } else show(queue[qi]);
+  };
+  $("lnext").onclick = () => jump(1);
+  $("lprev").onclick = () => jump(-1);
+  $("lknown").onclick = () => {
+    const w = queue[qi]; if(!w) return;
+    sel.delete(w.word); saveSel(); syncChecks(); cnt();
+    $("lknown").textContent = "빠짐: " + w.word; setTimeout(() => { const b = $("lknown"); if(b) b.textContent = "외웠어요 ✓"; }, 1200);
+    if(playing){ stopListen(); qi++; run(); } else { qi++; show(queue[qi] || null); }
+  };
 }
 
 window.go = go; window.toggleStar = toggleStar;
