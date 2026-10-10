@@ -5200,6 +5200,18 @@ VOCAB_DATA.forEach(d => d.words.forEach(w => { w.day = d.day; ALL.push(w); }));
 const byWord = w => ALL.find(x => x.word === w);
 const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function gapBlank(text, parts){   // 숙어 사이에 끼인 말(A, B, ~ 자리)은 남기고 숙어 부분만 빈칸
+  const re = new RegExp("\\b" + parts.map(x => "(" + x + ")").join("((?:\\s+\\S+){0,3}?\\s+)"), "i");
+  const e = esc(text); const m = e.match(re);
+  if(!m) return null;
+  let out = "", k = 1;
+  for(let i = 0; i < parts.length; i++){
+    out += '<span class="blank"></span>';
+    if(i < parts.length - 1){ const sep = m[k+1]; out += (sep.trim() ? sep.replace(/^\s+/, " ").replace(/\s+$/, " ") : " "); k += 2; }
+  }
+  out = out.replace(/<span class="blank"><\/span>(?: <span class="blank"><\/span>)+/g, '<span class="blank"></span>');
+  return e.slice(0, m.index) + out + e.slice(m.index + m[0].length);
+}
 function blankOut(text, word){
   word = word.replace(/\[(\w+)\]/g, "$1");   // sneak in[to] → sneak into
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
@@ -5214,18 +5226,18 @@ function blankOut(text, word){
   if(word.includes(" ")){
     const parts = word.split(/\s+/).filter(t => !/^[AB~]$/.test(t)).map(t => {
       if(t === "oneself") return "(?:oneself|myself|yourself|himself|herself|itself|ourselves|yourselves|themselves)";
-      const base = escRe(t).replace(/e$/, "e?") + "\\w*";
+      const base = /^(a|an|the|of|to|in|on|at|by|for|with|up|out|off|as|into|from|down|over|away|it|no|but|and)$/i.test(t) ? escRe(t) + "\\b" : escRe(t).replace(/e$/, "e?") + "\\w*";
       return IRR[t] ? "(?:" + base + "|" + IRR[t] + ")" : base;
     });
     const re3 = new RegExp("\\b" + parts.join("(?:\\s+\\S+){0,3}?\\s+"), "i");
-    if(re3.test(text)) return esc(text).replace(re3, '<span class="blank"></span>');
+    if(re3.test(text)){ const g = gapBlank(text, parts); return g || esc(text).replace(re3, '<span class="blank"></span>'); }
   }
   if(word.includes(" ")){
     // A/B 자리표시자는 아무 단어나 허용, 각 단어는 어간+굴절형(-ed, -ing 등)까지 매칭
-    const part = t => t.includes("one's") ? onesRe(t) + "\\w*" : escRe(t).replace(/e$/, "e?") + "\\w*";
+    const part = t => t.includes("one's") ? onesRe(t) + "\\w*" : (/^(a|an|the|of|to|in|on|at|by|for|with|up|out|off|as|into|from|down|over|away|it|no|but|and)$/i.test(t) ? escRe(t) + "\\b" : escRe(t).replace(/e$/, "e?") + "\\w*");
     const toks = word.split(/\s+/).filter(t => !/^[AB~]$/.test(t));   // A, B, ~는 자리표시자이므로 제외
     const loose = new RegExp("\\b" + toks.map(part).join("(?:\\s+\\S+){0,3}?\\s+"), "i");
-    if(loose.test(text)) return esc(text).replace(loose, '<span class="blank"></span>');
+    if(loose.test(text)){ const g = gapBlank(text, toks.map(part)); return g || esc(text).replace(loose, '<span class="blank"></span>'); }
   }
   if(word.includes(" ")){   // 불규칙 변화(ran, laid, were 등) 대비: 핵심 단어 하나로 매칭
     const key = word.split(/\s+/).filter(t => !/^[AB~]$/.test(t) && !/^(a|an|the|of|to|in|on|with|up|out|for|at|be)$/i.test(t))
