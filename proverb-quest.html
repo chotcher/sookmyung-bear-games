@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="속담대모험">
+<meta name="theme-color" content="#1d5fd6">
+<title>조고숭의 속담 대모험 - 조민규영어</title>
+<style>
+:root{--blue:#1d5fd6;--blue2:#4f8cff;--sky:#e8f1ff;--ink:#1b2440;--sub:#6b7699;--ok:#16a36a;--no:#e5484d;--gold:#ffb81c;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,#cfe0ff 0%,#eef4ff 45%,#fff7e6 100%);background-attachment:fixed;overflow-x:hidden}
+body.fever{background:linear-gradient(120deg,#ffd6e7,#fff1b8,#c9f7e4,#cfe0ff,#e9d6ff);background-size:400% 400%;animation:fev 3s linear infinite}
+@keyframes fev{0%{background-position:0 50%}100%{background-position:100% 50%}}
+#app{max-width:720px;margin:0 auto;min-height:100vh;padding:14px 14px 40px;position:relative}
+button{font-family:inherit;cursor:pointer;border:none}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.back{background:#fff;border-radius:12px;width:42px;height:42px;font-size:20px;box-shadow:0 2px 0 #c9d6f2}
+.ttl{flex:1;font-weight:900;font-size:16px;color:var(--blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hud{display:flex;gap:8px;align-items:center;font-weight:800;font-size:14px}
+.pill{background:#fff;border-radius:99px;padding:6px 12px;box-shadow:0 2px 0 #c9d6f2;white-space:nowrap}
+.hero{display:flex;align-items:center;gap:6px;margin:4px 0 8px}
+.hero h1{font-size:27px;line-height:1.15;font-weight:900;color:var(--blue);letter-spacing:-.5px}
+.hero h1 small{display:block;font-size:14px;color:var(--sub);font-weight:700;margin-top:6px;letter-spacing:0}
+.doll{width:120px;height:140px;flex:none}
+.doll.big{width:150px;height:175px}
+.hop{animation:hop .5s ease}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-22px) rotate(-6deg)}70%{transform:translateY(0) rotate(4deg)}}
+.wob{animation:wob .5s ease}
+@keyframes wob{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-7deg)}80%{transform:rotate(4deg)}}
+.idle{animation:idle 2.4s ease-in-out infinite}
+@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bubble{position:relative;background:#fff;border-radius:16px;padding:9px 13px;font-weight:800;font-size:14px;box-shadow:0 3px 0 #c9d6f2;max-width:230px}
+.bubble:before{content:'';position:absolute;left:-8px;top:18px;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.prog{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 3px 0 #c9d6f2;margin-bottom:12px}
+.bar{height:14px;background:#e3eafc;border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue2),var(--blue));border-radius:99px;transition:width .4s}
+.sec{font-weight:900;font-size:15px;margin:16px 2px 8px;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:#fff;border-radius:99px;padding:8px 13px;font-weight:800;font-size:14px;color:var(--sub);box-shadow:0 2px 0 #c9d6f2}
+.chip.on{background:var(--blue);color:#fff;box-shadow:0 2px 0 #0f3f99}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{background:#fff;border-radius:18px;padding:14px 12px;text-align:left;box-shadow:0 4px 0 #c9d6f2;transition:transform .1s}
+.mode:active{transform:translateY(3px);box-shadow:0 1px 0 #c9d6f2}
+.mode b{display:block;font-size:17px;font-weight:900;margin:4px 0 3px}
+.mode span{font-size:12.5px;color:var(--sub);font-weight:600;line-height:1.35;display:block}
+.mode .ic{font-size:28px}
+.mode.boss{grid-column:1/-1;background:linear-gradient(135deg,#2b1d5c,#5b2a86);color:#fff;box-shadow:0 4px 0 #1a103a}
+.mode.boss span{color:#d9cbff}
+.stage{background:#fff;border-radius:22px;padding:18px 16px;box-shadow:0 5px 0 #c9d6f2;margin-top:8px;position:relative}
+.q-kr{font-size:20px;font-weight:900;line-height:1.45;text-align:center}
+.q-emo{font-size:46px;text-align:center;margin-bottom:6px}
+.q-lbl{text-align:center;font-size:13px;font-weight:800;color:var(--blue);margin-bottom:8px;letter-spacing:.3px}
+.q-en{font-size:20px;font-weight:800;text-align:center;line-height:1.5;font-family:Georgia,'Times New Roman',serif}
+.opts{display:grid;gap:9px;margin-top:16px}
+.opt{background:var(--sky);border-radius:14px;padding:13px 14px;font-size:16.5px;font-weight:700;text-align:left;color:var(--ink);font-family:Georgia,'Times New Roman',serif;box-shadow:0 3px 0 #bccdf0;line-height:1.35}
+.opt:active{transform:translateY(2px)}
+.opt.ok{background:#d3f5e5;box-shadow:0 3px 0 #7fd8b0}
+.opt.no{background:#ffe0e1;box-shadow:0 3px 0 #f2a3a5;animation:shake .4s}
+.opt[disabled]{cursor:default}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.ox{display:flex;gap:12px;margin-top:18px}
+.ox button{flex:1;font-size:44px;font-weight:900;border-radius:20px;padding:12px 0;background:var(--sky);box-shadow:0 4px 0 #bccdf0}
+.ox .o{color:var(--blue)}.ox .x{color:var(--no)}
+.timer{height:8px;background:#e3eafc;border-radius:99px;overflow:hidden;margin:-4px 0 14px}
+.timer i{display:block;height:100%;background:var(--gold);width:100%}
+.slot{min-height:64px;background:#f3f7ff;border:2px dashed #b7c8ef;border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;margin-top:14px}
+.pool{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;justify-content:center}
+.tile{background:#fff;border-radius:10px;padding:8px 11px;font-size:17px;font-weight:700;font-family:Georgia,serif;box-shadow:0 3px 0 #bccdf0;border:1.5px solid #cfdcf7}
+.slot .tile{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 3px 0 #0f3f99}
+.slot.bad{border-color:var(--no);animation:shake .4s}
+.inp{display:flex;gap:8px;margin-top:16px}
+.inp input{flex:1;font-size:19px;padding:12px 14px;border-radius:14px;border:2px solid #b7c8ef;font-family:Georgia,serif;outline:none;min-width:0}
+.inp input:focus{border-color:var(--blue)}
+.btn{background:var(--blue);color:#fff;font-weight:900;font-size:16px;border-radius:14px;padding:12px 18px;box-shadow:0 4px 0 #0f3f99}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #0f3f99}
+.btn.sub{background:#fff;color:var(--blue);box-shadow:0 4px 0 #c9d6f2}
+.btn.gold{background:var(--gold);color:#4a3300;box-shadow:0 4px 0 #c98a00}
+.blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--blue);color:var(--blue)}
+.fb{margin-top:14px;border-radius:14px;padding:12px 14px;font-weight:700;font-size:14.5px;line-height:1.55;display:none}
+.fb.show{display:block}
+.fb.ok{background:#e4f8ef}.fb.no{background:#fff0f0}
+.fb .en{font-family:Georgia,serif;font-size:16.5px;font-weight:800;display:block;margin:2px 0}
+.fb .hint{color:#5b4a00;background:#fff6d6;border-radius:8px;padding:6px 8px;display:block;margin-top:6px;font-size:13.5px}
+.next{display:none;margin-top:12px;width:100%}
+.next.show{display:block}
+.combo{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:34px;font-weight:900;color:var(--blue);text-shadow:0 3px 0 #fff,0 0 18px #fff;pointer-events:none;animation:pop .9s ease forwards;z-index:50;white-space:nowrap}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-90%) scale(1)}}
+.conf{position:fixed;top:-10px;width:10px;height:14px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.cardx{perspective:900px;margin-top:8px}
+.flip{position:relative;height:330px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.flip.on{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff;border-radius:22px;box-shadow:0 5px 0 #c9d6f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.face.b{transform:rotateY(180deg);background:#f7faff}
+.face .n{position:absolute;top:12px;left:16px;font-weight:900;color:var(--sub);font-size:13px}
+.face .st{position:absolute;top:10px;right:14px;font-size:16px}
+.face .tap{position:absolute;bottom:12px;font-size:12px;color:var(--sub);font-weight:700}
+.row{display:flex;gap:8px;margin-top:12px}
+.row>*{flex:1}
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.mc{height:104px;border-radius:14px;background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;font-size:30px;font-weight:900;box-shadow:0 4px 0 #0f3f99;display:flex;align-items:center;justify-content:center;padding:6px;text-align:center;line-height:1.25}
+.mc.open{background:#fff;color:var(--ink);font-size:14px;font-family:Georgia,serif;font-weight:700;box-shadow:0 4px 0 #c9d6f2}
+.mc.open.A{border:2px solid #9bbcff}.mc.open.B{border:2px solid #ffcf6b}
+.mc.done{background:#d3f5e5;color:#0b6b43;box-shadow:0 4px 0 #7fd8b0;font-size:13px;font-family:Georgia,serif;font-weight:700}
+.dex{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.dx{background:#fff;border-radius:14px;padding:10px;text-align:left;box-shadow:0 3px 0 #c9d6f2;font-size:13px;line-height:1.35}
+.dx .e{font-size:22px}.dx b{font-family:Georgia,serif;font-size:13.5px;display:block;margin:2px 0}
+.dx .s{float:right;font-size:12px}
+.dx.lock{opacity:.6}
+.res{text-align:center}
+.res .big{font-size:44px;font-weight:900;color:var(--blue)}
+.wl{text-align:left;margin-top:14px}
+.wl div{background:#fff6f6;border-radius:12px;padding:9px 11px;margin-bottom:7px;font-size:13.5px;line-height:1.5}
+.wl b{font-family:Georgia,serif;font-size:15px}
+.boss{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px}
+.bossbar{flex:1;height:16px;background:#3b2a66;border-radius:99px;overflow:hidden;border:2px solid #fff}
+.bossbar i{display:block;height:100%;background:linear-gradient(90deg,#ff4f8b,#ff9a3d);transition:width .4s}
+.ghost{width:86px;height:86px;flex:none}
+.ghost.hit{animation:wob .5s}
+.lives{font-size:18px;letter-spacing:1px}
+.foot{text-align:center;color:var(--sub);font-size:12px;margin-top:22px;font-weight:700}
+.name{display:flex;gap:6px;margin-top:8px}
+.name input{flex:1;border:2px solid #cfdcf7;border-radius:12px;padding:8px 10px;font-size:15px;font-family:inherit;min-width:0}
+.tip{font-size:12.5px;color:var(--sub);font-weight:700;margin-top:6px;line-height:1.5}
+.speak{background:#fff;border-radius:12px;padding:6px 10px;font-size:18px;box-shadow:0 2px 0 #c9d6f2;margin-top:8px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===== 숙명여중2 2학기 기말 속담 학습지: 속담 34 + 관용 표현 12 (클래스카드 학교 세트 기준) ===== */
+// [영어, 우리말, 앞부분, 뒷부분, 빈칸 단어, 그림, 외우는 요령, 가짜(오류) 문장]
+const RAW=[["Actions speak louder than words.","말보다 행동이 중요하다.","Actions speak","louder than words.","louder","🏃💬","행동(Actions)이 말(words)보다 더 크게(louder) 말한다! 비교급 louder + than","Words speak louder than actions."],["The grass is always greener on the other side.","남의 떡이 더 커 보인다.","The grass is always greener","on the other side.","greener","🌱🏡","저쪽(the other side) 잔디가 늘 더 푸르러(greener) 보인다 — 비교급 greener","The grass is always greener on this side."],["When in Rome, do as the Romans do.","로마에 가면 로마법을 따르라.","When in Rome,","do as the Romans do.","Romans","🏛️🍝","로마에선 로마 사람들(Romans)이 하는 대로(as) 해라","When in Rome, do as the Greeks do."],["The early bird catches the worm.","일찍 일어나는 새가 벌레를 잡는다.","The early bird","catches the worm.","worm","🐦🪱","bird는 단수 → catches (3인칭 단수 -es!)","The early bird catch the worm."],["People who live in glass houses shouldn't throw stones.","가랑잎이 솔잎더러 바스락거린다고 하는 격이다. 똥 묻은 개가 겨 묻은 개 나무란다.","People who live in glass houses","shouldn't throw stones.","stones","🏠🪨","유리집(glass houses)에 사는 사람은 돌(stones)을 던지면 안 된다 — 선행사 People(복수) + who live","People who lives in glass houses shouldn't throw stones."],["A picture is worth a thousand words.","백문이 불여일견","A picture is worth","a thousand words.","worth","🖼️💬","그림 한 장이 천 마디 말(a thousand words)만큼의 가치가 있다(be worth + 명사)","A picture is worth a hundred words."],["Where there's smoke, there's fire.","아니 땐 굴뚝에 연기 나랴.","Where there's smoke,","there's fire.","smoke","💨🔥","연기(smoke)가 있는 곳엔 불(fire)이 있다 — 순서 주의: smoke 먼저!","Where there's fire, there's smoke."],["Practice makes perfect.","연습은 완벽을 만든다.","Practice","makes perfect.","perfect","🎹💯","Practice(단수) → makes. make + 목적어 없이 perfect","Practice make perfect."],["A watched pot never boils.","서둔다고 일이 되는 것은 아니다.","A watched pot","never boils.","boils","🍲👀","지켜봄을 당하는(watched) 냄비는 절대 안 끓는다 — 과거분사 watched가 pot을 꾸밈, pot 단수라 boils","A watching pot never boils."],["Two heads are better than one.","백지장도 맞들면 낫다.","Two heads","are better than one.","heads","🧠🧠","머리 두 개(Two heads)가 하나보다 낫다 — 복수라 are, good의 비교급 better","Two heads are best than one."],["Out of sight, out of mind","눈에서 멀어지면, 마음도 멀어진다.","Out of sight,","out of mind","mind","🙈💭","눈(sight) 밖이면 마음(mind) 밖! out of 두 번 반복","Out of sight, out of heart"],["Honesty is the best policy.","정직이 최선의 방책이다.","Honesty","is the best policy.","policy","😇🏆","정직(Honesty)이 최고의 방책(policy) — 최상급 the best","Honesty is the better policy."],["There is no time like the present.","지금이 가장 좋은 때다.(지금이 적기다.)","There is no time","like the present.","present","⏰🎁","present = 현재, 지금! (선물 아님) 현재 같은 때는 없다","There is no time like the future."],["Two wrongs don't make a right.","악을 악으로 갚아봐야 좋을 게 없다.","Two wrongs","don't make a right.","right","❌❌","잘못 두 개(Two wrongs)를 더해도 옳은 것(a right)이 안 된다","Two rights don't make a wrong."],["A burnt child dreads the fire.","자라 보고 놀란 가슴 솥뚜껑 보고 놀란다.","A burnt child","dreads the fire.","dreads","🧒🔥","불에 덴(burnt) 아이는 불을 두려워한다(dreads) — burn-burnt-burnt, child 단수라 dreads","A burnt child dread the fire."],["Easy come, easy go.","쉽게 얻은 것은 쉽게 잃는다.","Easy come,","easy go.","go","💸🪽","쉽게 오면(come) 쉽게 간다(go) — easy 두 번!","Easy come, hard go."],["Rome wasn't built in a day.","가치 있는 일은 하루아침에 이루어지지 않는다.","Rome wasn't built","in a day.","built","🏛️🧱","로마는 '지어지지' 않았다 → 수동태 wasn't built","Rome didn't build in a day."],["The squeaky wheel gets the grease.","우는 아이 젖 준다.","The squeaky wheel","gets the grease.","grease","🛞🛢️","끼익(squeaky) 소리 내는 바퀴가 기름(grease)을 얻는다 → 우는 아이 젖 준다","The quiet wheel gets the grease."],["The pen is mightier than the sword.","펜은 칼보다 강하다.","The pen","is mightier than the sword.","mightier","🖊️⚔️","mighty → mightier (y를 i로!) 펜이 칼(sword)보다 강하다","The sword is mightier than the pen."],["Birds of a feather flock together.","유유상종. 가재는 게 편이다.","Birds of a feather","flock together.","flock","🐦🪶","같은 깃털(feather)의 새들이 함께 모인다(flock) — Birds 복수라 flock","Birds of a feather flocks together."],["When the going gets tough, the tough get going.","상황이 힘들어지면 강한 사람은 더 강해진다.","When the going gets tough,","the tough get going.","tough","💪🔥","going-tough / tough-going 자리 바꾸기! the tough = 강한 사람들(복수) → get","When the going gets easy, the tough get going."],["What goes around comes around.","뿌린 대로 거둔다.","What goes around","comes around.","comes","🔄🪃","돌아서 나간 것(What goes around)은 돌아온다(comes around) — What절 주어는 단수 → comes","What goes around come around."],["Every cloud has a silver lining.","하늘이 무너져도 솟아날 구멍이 있다.","Every cloud","has a silver lining.","silver","☁️✨","모든 먹구름(cloud) 뒤엔 은빛(silver) 테두리(lining)가 있다 — Every + 단수 → has","Every cloud has a golden lining."],["Don't judge a book by its cover.","겉만 보고 판단하지 마라.","Don't judge a book","by its cover.","cover","📖👀","책을 표지(cover)로 판단하지(judge) 마라 — its(그것의) ≠ it's","Don't judge a book by its title."],["Too many cooks spoil the broth.","사공이 많으면 배가 산으로 간다.","Too many cooks","spoil the broth.","broth","👨‍🍳🍲","요리사(cooks)가 너무 많으면 수프(broth)를 망친다(spoil) — cooks 복수라 spoil","Too many cooks spoils the broth."],["A stitch in time saves nine.","제때 꿰맨 한 땀이 아홉 번의 바느질을 던다.","A stitch in time","saves nine.","nine","🧵🪡","제때(in time) 한 땀(stitch)이 아홉(nine) 땀을 아낀다 — 조고숭이 제일 좋아하는 속담!","A stitch in time saves ten."],["Don't count your chickens before they hatch.","김칫국부터 마셔서는 안 된다.","Don't count your chickens","before they hatch.","hatch","🐣🥚","병아리(chickens)가 부화하기(hatch) 전에 세지 마라","Don't count your eggs before they hatch."],["It never rains but it pours.","설상가상. 비가 내렸다 하면 퍼붓는다.","It never rains","but it pours.","pours","🌧️⛈️","never A but B = A하면 반드시 B → 비가 왔다 하면 퍼붓는다(pours)","It never rains but it snows."],["Don't bite the hand that feeds you.","은혜를 원수로 갚지 마라.","Don't bite the hand","that feeds you.","feeds","🤚🐶","먹여 주는(feeds) 손을 물지(bite) 마라 — 주격 관계대명사 that + 단수 동사 feeds","Don't bite the hand that feed you."],["Beggars can't be choosers.","찬밥 더운밥 가릴 때가 아니다.","Beggars","can't be choosers.","choosers","🍚🙏","거지(Beggars)는 고르는 사람(choosers)이 될 수 없다","Choosers can't be beggars."],["Don't put all of your eggs in one basket.","한 가지 일에 모든 걸 걸지 말아라.","Don't put all of your eggs","in one basket.","basket","🥚🧺","달걀(eggs)을 전부(all of) 한 바구니(basket)에 담지 마라","Don't put all of your eggs in one box."],["A leopard cannot change its spots.","제 버릇 남 못 준다. 세 살 버릇 여든 간다.","A leopard cannot change","its spots.","spots","🐆","표범(leopard)은 자기 점무늬(spots)를 못 바꾼다 — its(그것의) ≠ it's(it is)","A leopard cannot change it's spots."],["A sound mind in a sound body","건강한 신체에 건강한 정신이 깃든다.","A sound mind","in a sound body","sound","🧠💪","sound = 건강한! (소리 아님) 건강한 몸(body) 안에 건강한 정신(mind)","A sound body in a sound mind"],["A friend in need is a friend indeed","어려울 때 친구가 진정한 친구이다.","A friend in need","is a friend indeed","indeed","🤝❤️","need-indeed 라임! 어려울 때(in need) 친구가 진짜(indeed) 친구","A friend indeed is a friend in need"],["Hit the sack","잠자리에 들다.","Hit","the sack","sack","🛏️💤","sack = 자루(침낭) — 자루에 몸을 던진다 = 자러 가다 (to go to bed)","Hit the bag"],["Break a leg","행운을 빌다.","Break","a leg","leg","🎭🍀","공연 전에 '다리 부러져라' = 행운을 빌어! (used to wish someone luck)","Break an arm"],["Call it a day","하던 일을 마무리하고 그만하다.","Call it","a day","day","🏁🌇","오늘은 이걸로 하루(a day)라고 치자 = 그만하자 (finished doing something)","Call him a day"],["Under the weather","몸이 안 좋다","Under","the weather","weather","🤒🌧️","궂은 날씨(weather) 아래 눌린 기분 = 몸이 안 좋다 (feel ill) — I'm under the weather.","Over the weather"],["Spill the beans","비밀을 털어놓다.","Spill","the beans","beans","🫘🤫","콩(beans)을 쏟다(spill) = 비밀을 털어놓다 (tell secret information)","Spill the peas"],["See eye to eye","의견이 일치하다.","See eye","to eye","eye","👀🤝","눈(eye)과 눈을 마주 본다 = 의견이 같다 (agree) — eye 단수 두 번!","See eyes to eyes"],["A piece of cake","식은 죽 먹기","A piece","of cake","cake","🍰😋","케이크 한 조각(a piece of cake)처럼 쉬운 일 — The puzzle was a piece of cake.","A piece of bread"],["The last straw","참을 수 있는 한계를 넘게 만든 마지막 일","The last","straw","straw","🐪🌾","낙타 등을 부러뜨린 마지막(last) 지푸라기(straw) 한 가닥","The first straw"],["cost an arm and a leg","매우 비싼","cost an arm","and a leg","arm","💸🦵","팔(arm) 하나에 다리(leg) 하나 값 = 엄청 비싸다 — That smartphone cost an arm and a leg.","cost an arm and a head"],["When pigs fly","불가능한","When pigs","fly","pigs","🐷🪽","돼지(pigs)가 날 때(fly) = 절대 일어나지 않을 일 (never happen)","When birds fly"],["go viral","(인터넷·SNS에서) 입소문이 나다, 급속히 퍼지다","go","viral","viral","📱🔥","바이러스처럼(viral) 확 퍼진다 — 과거형 went viral: My dog's video went viral.","go virus"],["neck and neck","(경쟁·경주에서) 막상막하로, 박빙으로","neck","and neck","neck","🐎🐎","경주마 두 마리의 목(neck)이 나란히 = 막상막하 — The race is neck and neck.","head and neck"]];
+const P=RAW.map((r,i)=>({i,en:r[0],kr:r[1],a:r[2],b:r[3],k:r[4],e:r[5],h:r[6],f:r[7],no:i<34?'속담 '+(i+1):'관용 '+(i-33)}));
+const RANGES=[{n:'속담 1~7',s:0,t:7},{n:'속담 8~14',s:7,t:14},{n:'속담 15~21',s:14,t:21},{n:'속담 22~28',s:21,t:28},{n:'속담 29~34',s:28,t:34},{n:'관용 표현 12',s:34,t:46},{n:'속담 34 전체',s:0,t:34},{n:'모두 46',s:0,t:46},{n:'약한 것만',weak:1}];
+const MODES={
+ card:{ic:'📖',n:'카드 외우기',d:'그림·뜻·외우는 요령 + 원어민 발음'},
+ mem:{ic:'🃏',n:'반쪽 짝맞추기',d:'뒤집어서 앞부분·뒷부분 짝 찾기'},
+ quiz:{ic:'⚡',n:'스피드 퀴즈',d:'뜻 보고 고르기 + 뒷부분 고르기'},
+ ox:{ic:'⭕',n:'진짜? 가짜?',d:'한 단어 바뀐 가짜 속담 잡아내기 (내신 어법!)'},
+ order:{ic:'🧩',n:'문장 조립',d:'흩어진 단어로 속담 완성'},
+ blank:{ic:'✍️',n:'빈칸 쓰기',d:'핵심 단어 철자까지 직접 쓰기'},
+ boss:{ic:'👻',n:'보스전: 까먹깨비',d:'모든 문제가 섞여 나와요! 까먹깨비를 물리치고 속담을 지켜라'}
+};
+/* ===== 저장 ===== */
+const KEY='jgs_proverb_v1';
+let DB={stars:{},best:{},name:'',plays:0};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)DB=Object.assign(DB,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+const star=i=>DB.stars[i]||0;
+function addStar(i,d){DB.stars[i]=Math.max(0,Math.min(3,star(i)+d));save()}
+let RANGE=6;
+/* ===== 유틸 ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.random()*a.length|0];
+const stars=n=>'★'.repeat(n)+'☆'.repeat(3-n);
+function rangeIdx(r){const R=RANGES[r];if(R.weak){let w=P.filter(p=>star(p.i)<=1).map(p=>p.i);return w.length?w:P.map(p=>p.i)}const o=[];for(let i=R.s;i<R.t;i++)o.push(i);return o}
+/* ===== 소리 ===== */
+let AC=null;
+function tone(f,d,type='sine',v=.12,delay=0){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}}
+const SFX={
+ ok(){tone(660,.12,'triangle');tone(880,.14,'triangle',.12,.08);tone(1175,.18,'triangle',.1,.16)},
+ no(){tone(200,.25,'sawtooth',.08);tone(150,.3,'sawtooth',.07,.1)},
+ tap(){tone(520,.06,'square',.05)},
+ fever(){[523,659,784,1047,1319].forEach((f,k)=>tone(f,.15,'square',.07,k*.07))},
+ win(){[523,659,784,1047,784,1047].forEach((f,k)=>tone(f,.2,'triangle',.11,k*.12))},
+ hit(){tone(90,.2,'square',.12);tone(60,.25,'sawtooth',.08,.05)}
+};
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.88;const v=speechSynthesis.getVoices().find(v=>/en[-_]US/.test(v.lang));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+/* ===== 조고숭 인형 ===== */
+function doll(mood='norm',lives=5,max=5,cls=''){
+ const F='#a3521f',F2='#8a4215',SK='#f2d6b8',SK2='#d9b08c';
+ const fuzz=(cx,cy,r)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${F}"/><circle cx="${cx}" cy="${cy}" r="${r+2}" fill="none" stroke="${F}" stroke-width="5" stroke-dasharray="2 2.6"/>`;
+ const eye=(x)=>`<circle cx="${x}" cy="47" r="10.5" fill="${SK}"/><circle cx="${x}" cy="47" r="10.5" fill="none" stroke="#c99a70" stroke-width="1" stroke-dasharray="1.6 1.4"/><circle cx="${x}" cy="47" r="7.6" fill="#fff"/><circle cx="${x}" cy="${mood==='sad'?49:47}" r="5.6" fill="#c9821c"/><circle cx="${x}" cy="${mood==='sad'?49:47}" r="4" fill="#161010"/><circle cx="${x+1.8}" cy="${mood==='sad'?47:45}" r="1.6" fill="#fff"/>${mood==='happy'?`<circle cx="${x-2}" cy="49" r=".9" fill="#fff"/>`:''}`;
+ const brows=mood==='sad'?`<path d="M35 34l11 3M85 34l-11 3" stroke="${F2}" stroke-width="3" stroke-linecap="round"/>`:mood==='happy'?`<path d="M35 33q7-5 13 0M72 33q6-5 13 0" fill="none" stroke="${F2}" stroke-width="3" stroke-linecap="round"/>`:'';
+ const mouth=mood==='happy'?`<path d="M48 73q12 13 24 0q-12 4-24 0z" fill="#b5413f" stroke="#6b2a1c" stroke-width="1.8" stroke-linejoin="round"/>`
+  :mood==='sad'?`<path d="M50 79q10-7 20 0" fill="none" stroke="#6b2a1c" stroke-width="2.2" stroke-linecap="round"/>`
+  :`<path d="M47 74q13 3 26 0" fill="none" stroke="#6b2a1c" stroke-width="1.8" stroke-linecap="round"/>`;
+ const tear=mood==='sad'?`<path d="M83 56q3 5 0 8q-3-3 0-8z" fill="#7cc4ff"/>`:'';
+ let ban='';const n=Math.max(0,max);const gap=n>1?Math.min(12,44/(n-1)):0;const x0=60-gap*(n-1)/2;
+ for(let k=0;k<n;k++){const x=x0+k*gap,y=118;ban+=k<lives?`<g transform="rotate(-20 ${x} ${y})"><path d="M${x-6} ${y-2}q6 9 12 0q-6 4-12 0z" fill="#ffd23f" stroke="#b88a00" stroke-width="1"/><path d="M${x+6} ${y-2}l1.5-1.5" stroke="#6b4a00" stroke-width="1.6"/></g>`:`<path d="M${x-5} ${y-1}q5 7 10 0" fill="none" stroke="#d6b98a" stroke-width="1.4" stroke-dasharray="2 1.5"/>`}
+ return `<svg class="doll ${cls}" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" aria-label="조고숭 오랑우탄 인형">
+ <ellipse cx="60" cy="137" rx="38" ry="3.5" fill="#000" opacity=".1"/>
+ <path d="M30 96q-16 18-16 34" stroke="${F}" stroke-width="11" stroke-linecap="round" fill="none" stroke-dasharray="${''}"/>
+ <path d="M90 96q16 18 16 34" stroke="${F}" stroke-width="11" stroke-linecap="round" fill="none"/>
+ <ellipse cx="12" cy="132" rx="8" ry="5.5" fill="${SK2}"/><ellipse cx="108" cy="132" rx="8" ry="5.5" fill="${SK2}"/>
+ <ellipse cx="42" cy="132" rx="11" ry="6" fill="${SK2}"/><ellipse cx="78" cy="132" rx="11" ry="6" fill="${SK2}"/>
+ <ellipse cx="60" cy="108" rx="30" ry="25" fill="${F}"/><ellipse cx="60" cy="108" rx="32" ry="27" fill="none" stroke="${F}" stroke-width="5" stroke-dasharray="2 2.6"/>
+ <ellipse cx="60" cy="110" rx="18" ry="16" fill="#b5652d" opacity=".55"/>
+ ${ban}
+ <ellipse cx="22" cy="54" rx="7" ry="9" fill="${SK}"/><ellipse cx="98" cy="54" rx="7" ry="9" fill="${SK}"/>
+ ${fuzz(60,52,36)}
+ <path d="M44 20q4-10 9-2M58 16q3-10 7 0M70 19q5-9 8 2" stroke="${F}" stroke-width="4" fill="none" stroke-linecap="round"/>
+ ${brows}${eye(44)}${eye(76)}${tear}
+ <ellipse cx="60" cy="72" rx="22" ry="17" fill="${SK}"/><ellipse cx="60" cy="72" rx="22" ry="17" fill="none" stroke="#c99a70" stroke-width="1" stroke-dasharray="1.6 1.4"/>
+ <ellipse cx="60" cy="61" rx="9" ry="4" fill="#ecc9a6"/><circle cx="56" cy="62" r="1.6" fill="#3a2418"/><circle cx="64" cy="62" r="1.6" fill="#3a2418"/>
+ ${mouth}
+ <circle cx="36" cy="66" r="4.5" fill="#ff9a8a" opacity=".45"/><circle cx="84" cy="66" r="4.5" fill="#ff9a8a" opacity=".45"/>
+ </svg>`;
+}
+function ghost(hp=1){const anger=hp<.4;
+ return `<svg class="ghost" viewBox="0 0 100 100"><path d="M18 90V46a32 32 0 0 1 64 0v44l-10-8-11 8-11-8-11 8-11-8z" fill="#efe6ff" stroke="#6b4bb8" stroke-width="3"/>
+ <path d="M34 46l10 ${anger?6:3}M66 46l-10 ${anger?6:3}" stroke="#2b1d5c" stroke-width="3.5" stroke-linecap="round"/>
+ <circle cx="40" cy="54" r="5" fill="#2b1d5c"/><circle cx="60" cy="54" r="5" fill="#2b1d5c"/>
+ <path d="M40 70q10 ${anger?-8:8} 20 0" fill="none" stroke="#2b1d5c" stroke-width="3" stroke-linecap="round"/>
+ <text x="50" y="22" font-size="11" text-anchor="middle" fill="#6b4bb8" font-weight="900">까먹깨비</text></svg>`}
+const LINES={
+ ok:['좋아! 바나나 하나 더 먹은 기분!','천재 아냐?','속담 박사 등장!','이거 시험에 나온다!','완벽해~ Practice makes perfect!','우와 손이 빠르다!'],
+ no:['앗, 바나나 뺏겼다…','괜찮아, 다시 외우면 돼!','우끼끼… 헷갈렸어!','A stitch in time saves nine! 지금 고치자!','헷갈리지? 요령 한 번 더 보자'],
+ fever:['피버 타임!! 점수 2배!','불타오른다 🔥','멈추지 마!!']
+};
+function react(mood,text){const d=$('#dollbox');if(!d)return;d.innerHTML=doll(mood,G.lives,G.maxLives,mood==='happy'?'hop':mood==='sad'?'wob':'idle');const b=$('#bub');if(b&&text)b.textContent=text}
+function floatTxt(t,c){const e=document.createElement('div');e.className='combo';e.textContent=t;if(c)e.style.color=c;document.body.appendChild(e);setTimeout(()=>e.remove(),950)}
+function confetti(n=60){const cs=['#1d5fd6','#ffb81c','#ff5f8f','#16a36a','#8b5cf6','#4f8cff'];for(let k=0;k<n;k++){const e=document.createElement('div');e.className='conf';e.style.left=Math.random()*100+'vw';e.style.background=pick(cs);e.style.animationDuration=(1.6+Math.random()*1.8)+'s';e.style.animationDelay=Math.random()*.5+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),4200)}}
+/* ===== 홈 ===== */
+let G={};
+function home(){
+ stopTimer();document.body.classList.remove('fever');
+ const got=P.filter(p=>star(p.i)>=2).length;
+ const total3=P.filter(p=>star(p.i)===3).length;
+ const greet=DB.name?`${esc(DB.name)}, 오늘도 속담 지키러 왔구나!`:'우끼! 나는 오랑우탄 조고숭이야. 바나나 지키면서 속담 외우자!';
+ $('#app').innerHTML=`
+ <div class="hero"><div id="dollbox">${doll('happy',5,5,'idle big')}</div>
+ <div><img src="data:image/jpeg;base64,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" alt="진짜 조고숭" style="width:58px;height:58px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 0 #c9d6f2;float:right;margin-left:6px"><h1>조고숭의<br>속담 대모험<small>숙명여중2 학습지 속담 34 + 관용 표현 12</small></h1><div class="bubble" style="margin-top:10px">${greet}</div></div></div>
+ <div class="prog"><div style="display:flex;justify-content:space-between;font-weight:900;font-size:14px"><span>외운 표현 (★2개 이상)</span><span style="color:var(--blue)">${got} / ${P.length}</span></div>
+ <div class="bar"><i style="width:${got/P.length*100}%"></i></div>
+ <div class="tip">★3 완벽 ${total3}개 · 문제를 한 번에 맞히면 ★+1, 틀리면 ★-1</div>
+ <div class="name"><input id="nm" maxlength="10" placeholder="내 이름 (선택)" value="${esc(DB.name)}"><button class="btn sub" onclick="DB.name=$('#nm').value.trim();save();home()">저장</button></div></div>
+ <div class="sec">① 범위 고르기</div>
+ <div class="chips">${RANGES.map((r,k)=>`<button class="chip ${k===RANGE?'on':''}" onclick="RANGE=${k};SFX.tap();home()">${r.n}</button>`).join('')}</div>
+ <div class="sec">② 놀이 고르기</div>
+ <div class="modes">${Object.entries(MODES).map(([k,m])=>`<button class="mode ${k==='boss'?'boss':''}" onclick="start('${k}')"><span class="ic">${m.ic}</span><b>${m.n}</b><span>${m.d}</span>${DB.best[k+RANGE]?`<span style="margin-top:4px;font-weight:900;color:${k==='boss'?'#ffd36b':'#1d5fd6'}">최고 ${DB.best[k+RANGE]}점</span>`:''}</button>`).join('')}</div>
+ <div class="sec">③ 속담 도감</div>
+ <div class="dex">${P.map(p=>`<button class="dx ${star(p.i)?'':'lock'}" onclick="RANGE=7;start('card',${p.i})"><span class="s">${stars(star(p.i))}</span><span class="e">${p.e}</span><b>${p.no}. ${esc(p.en)}</b>${esc(p.kr.split('.')[0])}</button>`).join('')}</div>
+ <div class="foot">추천 순서: 📖카드 → 🃏짝맞추기 → ⚡퀴즈 → ⭕진짜가짜 → 🧩조립 → ✍️빈칸 → 👻보스전<br>© 조민규영어</div>`;
+}
+/* ===== 공통 게임 화면 ===== */
+function topBar(title,extra=''){return `<div class="top"><button class="back" onclick="home()">←</button><div class="ttl">${title}</div><div class="hud">${extra}</div></div>`}
+function start(mode,at){
+ SFX.tap();speechSynthesis&&speechSynthesis.getVoices();
+ const idx=rangeIdx(RANGE);
+ if(mode==='card')return cardMode(idx,at);
+ if(mode==='mem')return memMode(idx);
+ G={mode,queue:shuf(idx),pos:0,score:0,combo:0,maxCombo:0,lives:5,maxLives:5,right:0,tries:0,wrong:{},retry:{},first:{},boss:null};
+ if(mode==='boss'){const n=Math.min(Math.max(idx.length,8),20);let q=shuf(idx);while(q.length<n)q=q.concat(shuf(idx));G.queue=q.slice(0,n);G.boss={hp:n,max:n};G.lives=G.maxLives=4}
+ nextQ();
+}
+function hud(){return `<span class="pill">⭐ ${G.score}</span><span class="pill">${G.combo>=5?'🔥':'⚡'} ${G.combo}</span>`}
+function nextQ(){
+ stopTimer();
+ if(G.lives<=0)return result(false);
+ if(G.mode==='boss'&&G.boss.hp<=0)return result(true);
+ if(G.pos>=G.queue.length)return result(true);
+ const i=G.queue[G.pos];const p=P[i];
+ let type=G.mode;
+ if(type==='quiz')type=Math.random()<.5?'kr2en':'half';
+ if(type==='boss')type=pick(['kr2en','half','ox','ox','order','blank']);
+ G.cur={i,type,done:false,miss:0};
+ const left=G.mode==='boss'?'':`<span class="pill">${G.pos+1}/${G.queue.length}</span>`;
+ const bossUI=G.mode==='boss'?`<div class="boss">${ghost(G.boss.hp/G.boss.max)}<div class="bossbar"><i style="width:${G.boss.hp/G.boss.max*100}%"></i></div><b style="font-size:13px;margin-left:4px">${G.boss.hp}/${G.boss.max}</b></div>`:'';
+ const head=`${topBar(MODES[G.mode].ic+' '+MODES[G.mode].n,left+hud())}${bossUI}
+ <div style="display:flex;align-items:center;gap:8px"><div id="dollbox">${doll('norm',G.lives,G.maxLives,'idle')}</div><div class="bubble" id="bub">${G.combo>=5?pick(LINES.fever):pick(['할 수 있어!','집중~ 집중!','이건 쉽지?','천천히 읽어 봐','시험에 꼭 나온다구!'])}</div></div>`;
+ let body='';
+ const timed=['kr2en','half','ox'].includes(type);
+ if(type==='kr2en'){
+  const opts=shuf([i,...shuf(P.map(x=>x.i).filter(x=>x!==i)).slice(0,3)]);G.cur.ans=i;
+  body=`<div class="q-lbl">뜻에 맞는 영어 표현은?</div><div class="q-emo">${p.e}</div><div class="q-kr">${esc(p.kr)}</div>
+  <div class="opts">${opts.map(o=>`<button class="opt" data-v="${o}" onclick="choose(this,${o})">${esc(P[o].en)}</button>`).join('')}</div>`;
+ }else if(type==='half'){
+  const opts=shuf([i,...shuf(P.map(x=>x.i).filter(x=>x!==i)).slice(0,3)]);G.cur.ans=i;
+  body=`<div class="q-lbl">뒷부분을 이어 붙여라!</div><div class="q-emo">${p.e}</div><div class="q-en">${esc(p.a)} <span class="blank">&nbsp;?&nbsp;</span></div>
+  <div class="opts">${opts.map(o=>`<button class="opt" data-v="${o}" onclick="choose(this,${o})">… ${esc(P[o].b)}</button>`).join('')}</div>`;
+ }else if(type==='ox'){
+  const real=Math.random()<.45;G.cur.ans=real?1:0;G.cur.shown=real?p.en:p.f;
+  body=`<div class="q-lbl">진짜 표현일까, 한 단어가 바뀐 가짜일까?</div><div class="q-emo">${p.e}</div><div class="q-en">${esc(G.cur.shown)}</div>
+  <div style="text-align:center;color:var(--sub);font-weight:700;font-size:13.5px;margin-top:6px">${esc(p.kr.split('.')[0])}</div>
+  <div class="ox"><button class="o" onclick="chooseOX(this,1)">O</button><button class="x" onclick="chooseOX(this,0)">X</button></div>`;
+ }else if(type==='order'){
+  G.cur.words=p.en.split(' ');G.cur.pool=shuf(G.cur.words.map((w,k)=>({w,k})));
+  if(G.cur.pool.map(x=>x.w).join(' ')===p.en&&G.cur.words.length>1)G.cur.pool.reverse();
+  G.cur.put=[];
+  body=`<div class="q-lbl">단어를 순서대로 눌러 표현을 완성!</div><div class="q-emo">${p.e}</div><div class="q-kr" style="font-size:17px">${esc(p.kr)}</div>
+  <div class="slot" id="slot"></div><div class="pool" id="pool"></div>
+  <div class="row"><button class="btn sub" onclick="orderReset()">↺ 다시 놓기</button><button class="btn sub" onclick="say(P[G.cur.i].en)">🔊 힌트 듣기 (−50)</button></div>`;
+ }else if(type==='blank'){
+  const re=new RegExp('\\b'+p.k+'\\b');const html=esc(p.en).replace(re,'<span class="blank">&nbsp;'+'_ '.repeat(Math.min(p.k.length,6))+'</span>');
+  G.cur.ans=p.k;
+  body=`<div class="q-lbl">빈칸에 들어갈 단어를 쓰세요 (${p.k.length}글자)</div><div class="q-emo">${p.e}</div><div class="q-en">${html}</div>
+  <div style="text-align:center;color:var(--sub);font-weight:700;font-size:13.5px;margin-top:6px">${esc(p.kr)}</div>
+  <div class="inp"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="정답 입력" onkeydown="if(event.key==='Enter')checkBlank()"><button class="btn" onclick="checkBlank()">확인</button></div>`;
+ }
+ $('#app').innerHTML=head+`<div class="stage">${timed?'<div class="timer"><i id="tb"></i></div>':''}${body}<div class="fb" id="fb"></div><button class="btn next" id="nx" onclick="G.pos++;nextQ()">다음 ▶</button></div>`;
+ if(type==='order')orderDraw();
+ if(type==='blank')setTimeout(()=>{const a=$('#ans');a&&a.focus()},50);
+ if(timed)startTimer(G.mode==='boss'?12:15);
+}
+let TM=null;
+function startTimer(sec){G.cur.t0=Date.now();G.cur.limit=sec*1000;TM=setInterval(()=>{const r=1-(Date.now()-G.cur.t0)/G.cur.limit;const b=$('#tb');if(b){b.style.width=Math.max(0,r*100)+'%';b.style.background=r<.3?'#e5484d':'#ffb81c'}if(r<=0){stopTimer();timeUp()}},100)}
+function stopTimer(){if(TM){clearInterval(TM);TM=null}}
+function remain(){if(!G.cur.t0)return 0;return Math.max(0,Math.round((G.cur.limit-(Date.now()-G.cur.t0))/1000))}
+function timeUp(){if(G.cur.done)return;document.querySelectorAll('.opt,.ox button').forEach(b=>b.disabled=true);fail('시간 초과! ⏰')}
+/* 정답 / 오답 처리 */
+function good(extra=0){
+ const c=G.cur;c.done=true;stopTimer();
+ const firstTry=c.miss===0;
+ G.combo++;G.maxCombo=Math.max(G.maxCombo,G.combo);G.right++;
+ let pt=100+Math.min(G.combo,10)*10+remain()*5+extra;
+ if(G.combo>=5)pt*=2;
+ G.score+=Math.round(pt);
+ if(firstTry&&!G.first[c.i]){addStar(c.i,1);G.first[c.i]=1}
+ if(G.combo===5){SFX.fever();document.body.classList.add('fever');floatTxt('🔥 FEVER x2 🔥','#ff4f8b')}
+ else{SFX.ok();floatTxt(G.combo>=2?`${G.combo} COMBO! +${Math.round(pt)}`:`+${Math.round(pt)}`)}
+ if(G.mode==='boss'){G.boss.hp=Math.max(0,G.boss.hp-(G.combo>=5?2:1));SFX.hit();const gh=document.querySelector('.ghost');if(gh){gh.outerHTML=ghost(G.boss.hp/G.boss.max).replace('class="ghost"','class="ghost hit"')}const bb=document.querySelector('.bossbar i');if(bb)bb.style.width=(G.boss.hp/G.boss.max*100)+'%'}
+ react('happy',G.combo>=5?pick(LINES.fever):pick(LINES.ok));
+ say(P[c.i].en);
+ showFB(true);
+ refreshHud();
+}
+function fail(msg){
+ const c=G.cur;c.done=true;stopTimer();
+ G.combo=0;document.body.classList.remove('fever');G.lives--;
+ G.wrong[c.i]=(G.wrong[c.i]||0)+1;
+ if(!G.first[c.i]){addStar(c.i,-1);G.first[c.i]=1}
+ if(!G.retry[c.i]&&G.mode!=='boss'){G.retry[c.i]=1;G.queue.splice(Math.min(G.pos+4,G.queue.length),0,c.i)}
+ SFX.no();react('sad',msg||pick(LINES.no));
+ if(G.mode==='boss')floatTxt('까먹깨비의 공격! 💥','#8b5cf6');
+ showFB(false);refreshHud();
+}
+function refreshHud(){const h=document.querySelector('.hud');if(h){const l=G.mode==='boss'?'':`<span class="pill">${G.pos+1}/${G.queue.length}</span>`;h.innerHTML=l+hud()}}
+function showFB(ok){
+ const p=P[G.cur.i];const fb=$('#fb');
+ fb.className='fb show '+(ok?'ok':'no');
+ fb.innerHTML=`${ok?'⭕ 정답!':'❌ 정답은'} <span class="en">${esc(p.en)}</span>${esc(p.kr)}<span class="hint">💡 ${esc(p.h)}</span>
+ <button class="speak" onclick="say(P[${p.i}].en)">🔊 발음 듣기</button>`;
+ $('#nx').classList.add('show');
+ if(G.lives<=0)$('#nx').textContent='결과 보기 ▶';
+}
+function choose(btn,v){
+ if(G.cur.done)return;
+ document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(+b.dataset.v===G.cur.ans)b.classList.add('ok')});
+ if(v===G.cur.ans){good()}else{btn.classList.add('no');fail()}
+}
+function chooseOX(btn,v){
+ if(G.cur.done)return;
+ document.querySelectorAll('.ox button').forEach(b=>b.disabled=true);
+ if(v===G.cur.ans){good();if(!G.cur.ans){$('#fb').insertAdjacentHTML('afterbegin',`<div style="margin-bottom:6px">가짜 문장: <s>${esc(G.cur.shown)}</s></div>`)}}
+ else{fail(G.cur.ans?'진짜 속담이었어!':'가짜였어! 한 단어가 달라');if(!G.cur.ans)$('#fb').insertAdjacentHTML('afterbegin',`<div style="margin-bottom:6px">가짜 문장: <s>${esc(G.cur.shown)}</s></div>`)}
+}
+/* 문장 조립 */
+function orderDraw(){
+ const c=G.cur;
+ $('#slot').innerHTML=c.put.map((t,k)=>`<button class="tile" onclick="orderBack(${k})">${esc(t.w)}</button>`).join('')||'<span style="color:#9fb0d6;font-weight:700;font-size:14px;padding:8px">여기에 단어가 들어가요</span>';
+ $('#pool').innerHTML=c.pool.map((t,k)=>`<button class="tile" onclick="orderPut(${k})">${esc(t.w)}</button>`).join('');
+}
+function orderPut(k){if(G.cur.done)return;SFX.tap();const c=G.cur;c.put.push(c.pool.splice(k,1)[0]);orderDraw();if(!c.pool.length)orderCheck()}
+function orderBack(k){if(G.cur.done)return;const c=G.cur;c.pool.push(c.put.splice(k,1)[0]);orderDraw()}
+function orderReset(){if(G.cur.done)return;const c=G.cur;c.pool=c.pool.concat(c.put);c.put=[];orderDraw()}
+function orderCheck(){
+ const c=G.cur;const s=c.put.map(t=>t.w).join(' ');
+ if(s===P[c.i].en){good(50);return}
+ c.miss++;
+ if(c.miss===1){const sl=$('#slot');sl.classList.add('bad');SFX.no();G.combo=0;document.body.classList.remove('fever');refreshHud();
+  let k=0;while(k<c.put.length&&c.put[k].w===c.words[k])k++;
+  react('sad',`앞에서 ${k}단어까지는 맞았어! 다시 해 보자`);
+  setTimeout(()=>{sl.classList.remove('bad');const keep=c.put.slice(0,k);c.pool=shuf(c.pool.concat(c.put.slice(k)));c.put=keep;orderDraw()},700);
+ }else{fail()}
+}
+/* 빈칸 */
+const norm=s=>s.toLowerCase().replace(/[^a-z']/g,'');
+function checkBlank(){
+ if(G.cur.done)return;const a=$('#ans');const v=norm(a.value);if(!v)return;
+ if(v===norm(G.cur.ans)){a.style.borderColor='var(--ok)';good(40);return}
+ G.cur.miss++;
+ if(G.cur.miss===1){SFX.no();G.combo=0;document.body.classList.remove('fever');refreshHud();const k=G.cur.ans;a.value='';a.placeholder=`힌트: ${k[0]}${'_'.repeat(k.length-2)}${k.length>1?k[k.length-1]:''}`;a.classList.add('bad');a.style.borderColor='var(--no)';react('sad','첫 글자랑 끝 글자 힌트 줄게!');a.focus()}
+ else{a.disabled=true;fail()}
+}
+/* ===== 결과 ===== */
+function result(clear){
+ stopTimer();document.body.classList.remove('fever');
+ const key=G.mode+RANGE;const isBest=G.score>(DB.best[key]||0);if(isBest)DB.best[key]=G.score;DB.plays++;save();
+ const boss=G.mode==='boss';const win=boss?G.boss.hp<=0:clear&&G.lives>0;
+ if(win){SFX.win();confetti()}
+ const wl=Object.keys(G.wrong).map(Number);
+ const title=boss?(win?'까먹깨비를 물리쳤다!':'까먹깨비에게 졌다…'):(G.lives<=0?'바나나를 다 뺏겼어요!':'스테이지 클리어!');
+ $('#app').innerHTML=`${topBar('결과')}
+ <div class="stage res"><div id="dollbox" style="display:flex;justify-content:center">${doll(win?'happy':'sad',Math.max(G.lives,0),G.maxLives,win?'hop big':'wob big')}</div>
+ <div style="font-size:22px;font-weight:900;margin:6px 0">${title}</div>
+ <div class="big">${G.score}점</div>${isBest&&G.score?'<div style="color:#e08a00;font-weight:900">🏆 최고 기록!</div>':''}
+ <div style="color:var(--sub);font-weight:800;margin-top:6px">맞힌 문제 ${G.right} · 최대 콤보 ${G.maxCombo} · 남은 바나나 ${Math.max(G.lives,0)}</div>
+ ${wl.length?`<div class="wl"><div style="background:none;padding:0;font-weight:900">다시 볼 속담 ${wl.length}개</div>${wl.map(i=>`<div>${P[i].e} <b>${esc(P[i].en)}</b><br>${esc(P[i].kr)}<br><span style="color:#7a5a00">💡 ${esc(P[i].h)}</span></div>`).join('')}</div>`:'<div style="margin-top:12px;font-weight:900;color:var(--ok)">하나도 안 틀렸어요! 완벽! 🎉</div>'}
+ <div class="row" style="margin-top:16px"><button class="btn" onclick="start('${G.mode}')">한 번 더</button><button class="btn sub" onclick="home()">처음으로</button></div>
+ ${wl.length?`<button class="btn gold" style="width:100%;margin-top:10px" onclick="retryWrong([${wl}])">틀린 것만 다시 (${wl.length}개)</button>`:''}
+ </div>`;
+}
+function retryWrong(list){const m=G.mode==='boss'?'quiz':G.mode;G={mode:m,queue:shuf(list),pos:0,score:0,combo:0,maxCombo:0,lives:5,maxLives:5,right:0,wrong:{},retry:{},first:{}};nextQ()}
+/* ===== 카드 ===== */
+let CD={};
+function cardMode(idx,at){CD={list:idx,k:at!=null?Math.max(0,idx.indexOf(at)):0};cardDraw()}
+function cardDraw(){
+ const p=P[CD.list[CD.k]];
+ $('#app').innerHTML=`${topBar('📖 카드 외우기',`<span class="pill">${CD.k+1}/${CD.list.length}</span>`)}
+ <div class="cardx"><div class="flip" id="fl" onclick="this.classList.toggle('on');if(this.classList.contains('on'))say(P[${p.i}].en)">
+ <div class="face"><span class="n">${p.no}</span><span class="st">${stars(star(p.i))}</span><div style="font-size:64px">${p.e}</div><div class="q-kr" style="margin-top:12px">${esc(p.kr)}</div><div style="margin-top:14px;font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--blue)">${esc(p.a)} …</div><span class="tap">눌러서 뒤집기</span></div>
+ <div class="face b"><span class="n">${p.no}</span><div style="font-size:40px">${p.e}</div><div class="q-en" style="font-size:22px;margin-top:8px">${esc(p.en)}</div><div style="margin-top:8px;font-weight:700;color:var(--sub);font-size:14px">${esc(p.kr)}</div><div class="fb show" style="background:#fff6d6;color:#5b4a00;text-align:left">💡 ${esc(p.h)}</div><span class="tap">다시 눌러 앞면</span></div>
+ </div></div>
+ <div class="row"><button class="btn sub" onclick="cardGo(-1)">◀ 이전</button><button class="btn sub" onclick="say(P[${p.i}].en)">🔊 듣기</button><button class="btn sub" onclick="cardGo(1)">다음 ▶</button></div>
+ <div class="row"><button class="btn" style="background:#ff8a3d;box-shadow:0 4px 0 #c45f17" onclick="cardGo(1)">😵 아직 몰라요</button><button class="btn" onclick="addStar(${p.i},1);SFX.ok();floatTxt('★ +1');setTimeout(()=>cardGo(1),300)">😎 외웠어요 ★+1</button></div>
+ <div style="display:flex;align-items:center;gap:8px;margin-top:12px"><div id="dollbox">${doll('happy',5,5,'idle')}</div><div class="bubble">${pick(['앞면 보고 영어로 먼저 말해 봐! 그다음 뒤집기!','소리 내서 세 번 따라 읽으면 오래 가!','💡 요령까지 읽으면 시험 함정도 피할 수 있어!'])}</div></div>`;
+ let sx=null;const fl=$('#fl');fl.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});fl.addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60){e.preventDefault();cardGo(dx<0?1:-1)}sx=null});
+}
+function cardGo(d){SFX.tap();CD.k=(CD.k+d+CD.list.length)%CD.list.length;cardDraw()}
+/* ===== 반쪽 짝맞추기 ===== */
+let MM={};
+function memMode(idx){
+ const sel=shuf(idx).slice(0,6);
+ MM={sel,cards:shuf(sel.flatMap(i=>[{i,s:'A'},{i,s:'B'}])),open:[],done:{},moves:0,t0:Date.now(),lock:false,combo:0,score:0};
+ memDraw();
+}
+function memDraw(){
+ const left=MM.sel.length-Object.keys(MM.done).length;
+ $('#app').innerHTML=`${topBar('🃏 반쪽 짝맞추기',`<span class="pill">남은 짝 ${left}</span><span class="pill">🔄 ${MM.moves}</span>`)}
+ <div style="display:flex;align-items:center;gap:8px"><div id="dollbox">${doll('norm',5,5,'idle')}</div><div class="bubble" id="bub">파란 테두리 = 앞부분, 노란 테두리 = 뒷부분! 짝을 찾아 줘</div></div>
+ <div class="mem">${MM.cards.map((c,k)=>{const p=P[c.i];const isDone=MM.done[c.i];const isOpen=MM.open.includes(k);
+  if(isDone)return `<div class="mc done">${esc(c.s==='A'?p.a:p.b)}</div>`;
+  if(isOpen)return `<div class="mc open ${c.s}">${esc(c.s==='A'?p.a+' …':'… '+p.b)}</div>`;
+  return `<button class="mc" onclick="memFlip(${k})">${c.s==='A'?'🧵':'🪡'}</button>`}).join('')}</div>`;
+}
+function memFlip(k){
+ if(MM.lock||MM.open.includes(k))return;SFX.tap();MM.open.push(k);memDraw();
+ if(MM.open.length<2)return;
+ MM.moves++;MM.lock=true;const [a,b]=MM.open.map(x=>MM.cards[x]);
+ if(a.i===b.i&&a.s!==b.s){
+  MM.combo++;MM.score+=100+MM.combo*30;
+  setTimeout(()=>{MM.done[a.i]=1;MM.open=[];MM.lock=false;SFX.ok();say(P[a.i].en);memDraw();react2('happy',`${P[a.i].e} ${MM.combo>=2?MM.combo+'연속 성공!':'짝 찾았다!'}`);floatTxt(MM.combo>=2?`${MM.combo} COMBO!`:'짝!');
+   if(Object.keys(MM.done).length===MM.sel.length)setTimeout(memEnd,900)},450);
+ }else{
+  MM.combo=0;
+  setTimeout(()=>{MM.open=[];MM.lock=false;SFX.no();memDraw();react2('sad',pick(['아깝다! 위치 기억해 둬','음… 그 짝이 아니야','다시 찾아보자!']))},950);
+ }
+}
+function react2(m,t){const d=$('#dollbox');if(d)d.innerHTML=doll(m,5,5,m==='happy'?'hop':'wob');const b=$('#bub');if(b)b.textContent=t}
+function memEnd(){
+ const sec=Math.round((Date.now()-MM.t0)/1000);const score=Math.max(100,MM.score+600-MM.moves*15-sec*3);
+ const key='mem'+RANGE;const best=score>(DB.best[key]||0);if(best)DB.best[key]=score;save();SFX.win();confetti();
+ $('#app').innerHTML=`${topBar('결과')}<div class="stage res"><div style="display:flex;justify-content:center">${doll('happy',5,5,'hop big')}</div>
+ <div style="font-size:22px;font-weight:900">짝 6개 모두 찾았다!</div><div class="big">${score}점</div>${best?'<div style="color:#e08a00;font-weight:900">🏆 최고 기록!</div>':''}
+ <div style="color:var(--sub);font-weight:800;margin-top:6px">${MM.moves}번 뒤집기 · ${sec}초</div>
+ <div class="wl">${MM.sel.map(i=>`<div style="background:#eef6ff">${P[i].e} <b>${esc(P[i].en)}</b><br>${esc(P[i].kr)}</div>`).join('')}</div>
+ <div class="row" style="margin-top:14px"><button class="btn" onclick="start('mem')">한 판 더</button><button class="btn sub" onclick="home()">처음으로</button></div></div>`;
+}
+home();
+</script>
+</body>
+</html>
