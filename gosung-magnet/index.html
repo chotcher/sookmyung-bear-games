@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>조고숭의 자기장 탈출</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#12141b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 박진감 있는 오락실 배틀, 그러나 과학 내용은 정확하게
+   IDEA: 자석 실험실 행성 — 빨강 N, 파랑 S가 세상의 전부인 곳
+   PICTURE: 조고숭(실제 인형 사진)과 마그몬이 맞붙는 배틀 화면, 실험 장치 SVG
+   COLOUR and TYPE: 깊은 실험실 어둠 #12141b, N 빨강 #ef4b42, S 파랑 #3479ee, 불꽃 노랑 #ffd23a / Jua 제목 + Noto Sans KR 본문
+   LAYOUT: 한 화면 한 장면 — 맵 → 대화 → 실험 → 배틀 → 결과 */
+:root{color-scheme:dark;--bg:#12141b;--panel:#1d2130;--panel2:#262b3d;--ink:#f3f4f8;--mute:#a9afc4;--n:#ef4b42;--s:#3479ee;--y:#ffd23a;--g:#3ddc84;--line:#343a50}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+body{background:radial-gradient(1200px 600px at 80% -10%,#24305a55,transparent 60%),radial-gradient(900px 500px at -10% 110%,#5a242455,transparent 60%),var(--bg);min-height:100vh}
+h1,h2,h3,.jua{font-family:Jua,"Noto Sans KR",sans-serif;font-weight:400;letter-spacing:.2px}
+.wrap{max-width:900px;margin:0 auto;padding:16px max(4vw,14px) 40px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;min-height:44px;border-radius:14px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.btn{background:var(--y);color:#1a1400;font-weight:900;padding:10px 20px;box-shadow:0 4px 0 #b08d10}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b08d10}
+.btn2{background:var(--panel2);border:1px solid var(--line);padding:10px 16px;font-weight:700}
+.btn2.on{background:#2c3a62;border-color:var(--s)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ava{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--y);flex:none;background:#5b3a22}
+.ava.big{width:min(46vw,220px);height:min(46vw,220px);border-width:5px}
+/* title */
+.hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;padding:20px 0 8px}
+.hero h1{font-size:clamp(34px,7vw,52px);line-height:1.05;margin:0 0 8px;text-wrap:balance}
+.hero h1 b{color:var(--y);font-weight:400}
+.hero p{margin:0;color:var(--mute)}
+@media(max-width:600px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}}
+/* map */
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:22px}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px 16px;text-align:left;display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center;min-height:84px}
+.st .num{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font:28px Jua,sans-serif;background:linear-gradient(135deg,var(--n) 50%,var(--s) 50%)}
+.st h3{margin:0;font-size:19px;line-height:1.2}
+.st small{color:var(--mute);font-size:13px}
+.st .stars{color:var(--y);font-size:15px;letter-spacing:2px}
+.st[disabled]{opacity:.45;cursor:not-allowed}
+.st.boss{grid-column:1/-1;background:linear-gradient(90deg,#3a1720,#1d2130 50%,#17244a)}
+.st.boss .num{background:#000;color:var(--y)}
+.tiny{font-size:13px;color:var(--mute)}
+.link{background:none;color:var(--mute);text-decoration:underline;min-height:32px;padding:4px}
+/* talk */
+.talk{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:end;margin-top:16px}
+.bub{background:#fff;color:#161820;border-radius:20px 20px 20px 4px;padding:18px 20px;font-size:18px;line-height:1.6;min-height:120px;position:relative}
+.bub b{color:#c22d24}.bub i{font-style:normal;color:#1f5bd0;font-weight:700}
+.bub .who{font:15px Jua,sans-serif;color:#8a5a2b;display:block;margin-bottom:4px}
+.dots{display:flex;gap:6px;margin:12px 0}.dots span{width:8px;height:8px;border-radius:50%;background:var(--line)}.dots span.on{background:var(--y)}
+@media(max-width:600px){.talk{grid-template-columns:1fr}.talk .ava{width:72px;height:72px}}
+/* sim */
+.lab{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:14px;margin-top:14px}
+.lab svg{width:100%;height:auto;display:block;background:#0e1016;border-radius:14px}
+.say{display:flex;gap:10px;align-items:center;background:#0e1016;border-radius:14px;padding:10px 12px;margin-top:10px;font-weight:700;min-height:56px}
+.say img{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none}
+.ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}
+.ctrl label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute);background:var(--panel2);padding:8px 12px;border-radius:12px}
+input[type=range]{width:100%;accent-color:var(--y);height:28px}
+.meter{height:16px;background:#0e1016;border-radius:9px;overflow:hidden}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--s),var(--n));transition:width .3s}
+svg text{font-family:"Noto Sans KR",sans-serif;font-weight:900}
+.mv{transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+/* battle */
+.arena{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;margin-top:12px}
+.fighter{text-align:center}
+.fighter .nm{font:18px Jua,sans-serif;margin-top:4px}
+.vs{font:34px Jua,sans-serif;color:var(--y)}
+.hp{height:14px;background:#0e1016;border-radius:8px;overflow:hidden;margin:6px auto 0;max-width:200px;border:1px solid var(--line)}.hp i{display:block;height:100%;background:var(--g);transition:width .4s}
+.hearts{font-size:22px;color:var(--n);letter-spacing:2px;min-height:30px}
+.mon{width:min(36vw,170px);height:auto}
+.shake{animation:sh .45s}@keyframes sh{20%{transform:translateX(-10px) rotate(-4deg)}40%{transform:translateX(10px) rotate(4deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.hit{animation:hit .5s}@keyframes hit{30%{filter:brightness(3) saturate(0);transform:scale(.9)}}
+.hud{display:flex;justify-content:space-between;gap:8px;font:18px Jua,sans-serif;margin-top:10px}
+.hud .combo{color:var(--y)}
+.timer{height:10px;background:#0e1016;border-radius:6px;overflow:hidden;margin-top:6px}.timer i{display:block;height:100%;background:var(--y)}
+.qcard{background:#fff;color:#161820;border-radius:20px;padding:18px;margin-top:12px}
+.qcard .qn{font:15px Jua,sans-serif;color:#8a5a2b}
+.qcard h2{font:700 19px/1.5 "Noto Sans KR",sans-serif;margin:4px 0 12px}
+.ch{display:grid;gap:8px}
+.ch button{background:#eef0f6;color:#161820;text-align:left;padding:12px 14px;font-weight:700;border:2px solid transparent;font-size:16px}
+.ch button:hover{border-color:#c9cee0}
+.ch button.ok{background:#d6f7e4;border-color:#22a35a}.ch button.no{background:#fde0de;border-color:#d23a30}
+.exp{margin-top:12px;background:#fff7d6;border-radius:14px;padding:12px 14px;color:#3a2f00;font-size:15.5px}
+.exp b{color:#b42318}
+.float{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font:clamp(36px,9vw,64px) Jua,sans-serif;color:var(--y);text-shadow:0 4px 0 #000;pointer-events:none;animation:fl 1s forwards;z-index:9;white-space:nowrap}
+.float.bad{color:var(--n)}
+@keyframes fl{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-90%) scale(1)}}
+.result{text-align:center;padding-top:20px}
+.result .big{font:clamp(40px,10vw,64px)/1.05 Jua,sans-serif;margin:10px 0}
+.result .stars{font-size:46px;color:var(--y);letter-spacing:6px}
+.rv{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;text-align:left;font-size:15px}
+.rv b{color:var(--y)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top h2{margin:0;font-size:24px;line-height:1.2}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+{
+const IMG='gosung.jpg';
+const $=s=>document.querySelector(s);
+const app=$('#app');
+let anim=0, tmr=0, AC=null;
+function beep(f=600,d=.12,t='square',v=.06){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+const sGood=()=>{beep(660,.08);setTimeout(()=>beep(990,.15),80)};
+const sBad=()=>{beep(180,.3,'sawtooth',.07)};
+function load(){try{return JSON.parse(localStorage.getItem('gosung-mag')||'{}')}catch(e){return{}}}
+function save(d){try{localStorage.setItem('gosung-mag',JSON.stringify(d))}catch(e){}}
+let SAVE=load(); SAVE.stars=SAVE.stars||{}; SAVE.best=SAVE.best||{};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function floatTxt(t,bad){const d=document.createElement('div');d.className='float'+(bad?' bad':'');d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1000)}
+function stopAll(){cancelAnimationFrame(anim);clearInterval(tmr);if(window._osc){try{window._osc.stop()}catch(e){}window._osc=null}}
+
+/* ---------- 몬스터 ---------- */
+function mon(c1,c2,big){return `<svg class="mon" viewBox="0 0 200 200" aria-label="몬스터">
+<ellipse cx="100" cy="186" rx="62" ry="9" fill="#000" opacity=".4"/>
+<path d="M58 70 L40 18 L80 52Z" fill="${c1}"/><path d="M142 70 L160 18 L120 52Z" fill="${c2}"/>
+<text x="50" y="45" fill="#fff" font-size="16">N</text><text x="142" y="45" fill="#fff" font-size="16">S</text>
+<path d="M30 120 Q30 52 100 52 Q170 52 170 120 Q170 182 100 182 Q30 182 30 120Z" fill="url(#mg${c1.slice(1)})"/>
+<defs><linearGradient id="mg${c1.slice(1)}" x1="0" x2="1"><stop offset=".5" stop-color="${c1}"/><stop offset=".5" stop-color="${c2}"/></linearGradient></defs>
+<path d="M45 96 Q60 72 100 70 Q80 80 60 104Z" fill="#fff" opacity=".25"/>
+<ellipse cx="76" cy="112" rx="15" ry="${big?11:15}" fill="#fff"/><ellipse cx="124" cy="112" rx="15" ry="${big?11:15}" fill="#fff"/>
+<circle cx="79" cy="115" r="7" fill="#111"/><circle cx="121" cy="115" r="7" fill="#111"/>
+<path d="M60 92 L92 102M140 92 L108 102" stroke="#111" stroke-width="6" stroke-linecap="round"/>
+<path d="M74 150 Q100 ${big?132:140} 126 150" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M84 147 l5 9 l5-9M108 147 l5 9 l5-9" fill="#fff"/>
+</svg>`}
+
+/* ---------- 스테이지 데이터 ---------- */
+const STAGES=[
+{t:'자석의 숲',sub:'자기력 · 자기장 · 자기력선',mon:['#ef4b42','#3479ee'],mn:'마그몬',sim:'magnets',
+talk:['안녕! 나는 <b>조고숭</b>이야. 자기장 행성에 갇혀 버렸어… 6개의 관문을 깨고 나를 탈출시켜 줘!',
+'첫 관문! 자석과 자석 사이에 작용하는 힘을 <b>자기력</b>이라고 해. <b>다른 극</b>은 끌어당기고(인력), <i>같은 극</i>은 밀어내(척력).',
+'자기력이 작용하는 공간이 <b>자기장</b>이야. 방향은 <b>나침반 바늘의 N극이 가리키는 방향</b>! 극에 가까울수록 세.',
+'<b>자기력선</b> 3가지 규칙만 외우자! ① N극에서 나와 S극으로 들어간다 ② 끊어지거나 <b>교차하지 않는다</b> ③ 촘촘할수록 자기장이 세다.'],
+q:[
+{q:'서로 다른 극(N극과 S극)을 가까이 하면 어떤 힘이 작용할까?',c:['서로 끌어당기는 힘(인력)','서로 밀어내는 힘(척력)','아무 힘도 작용하지 않는다','번갈아 밀고 당긴다'],a:0,e:'다른 극끼리는 <b>끌어당기는 힘(인력)</b>, 같은 극끼리는 밀어내는 힘(척력)!'},
+{q:'자기장의 방향은 어떻게 정할까?',c:['나침반 바늘의 N극이 가리키는 방향','나침반 바늘의 S극이 가리키는 방향','전류가 흐르는 방향','항상 지구의 북쪽'],a:0,e:'자기장의 방향 = <b>나침반 바늘 N극이 가리키는 방향</b>.'},
+{q:'자기력선에 대한 설명으로 옳지 않은 것은?',c:['서로 교차할 수 있다','N극에서 나와 S극으로 들어간다','중간에 끊어지지 않는다','간격이 촘촘할수록 자기장이 세다'],a:0,e:'자기력선은 <b>절대 교차하지 않는다</b>. 끊어지지도 않아!'},
+{q:'막대자석 주위에서 자기장이 가장 센 곳은?',c:['양 끝(극) 부분','자석의 한가운데','자석에서 아주 먼 곳','어디나 똑같다'],a:0,e:'양 극에 가까울수록 자기력선이 촘촘 → <b>양 끝에서 가장 세다</b>.'},
+{q:'지구의 지리상 북극 근처에는 자석의 어떤 극이 있을까?',c:['S극','N극','극이 없다','N극과 S극이 섞여 있다'],a:0,e:'나침반 N극이 북쪽으로 끌려가니까, 북극 근처에는 N극을 끌어당기는 <b>S극</b>이 있어!'},
+{q:'두 막대자석의 N극과 N극을 마주 보게 했을 때 옳은 것은?',c:['자기력선이 각각의 N극에서 나오고, 서로 밀어낸다','자기력선이 한쪽 N극에서 다른 N극으로 이어진다','자기력선이 서로 교차한다','서로 끌어당긴다'],a:0,e:'같은 극끼리는 자기력선이 이어지지 않고 <b>각각 N극에서 나와 휘어 나가며 밀어낸다</b>.'}]},
+{t:'코일 동굴',sub:'전류가 흐르는 코일 주위의 자기장',mon:['#ff8a3d','#3479ee'],mn:'코일몬',sim:'coil',
+talk:['두 번째 관문! 코일에 전류가 흐르면 코일 주위에 <b>자기장</b>이 생겨. 코일이 자석처럼 변하는 거지!',
+'<b>오른손 법칙</b>: 오른손 네 손가락으로 <b>전류 방향</b>을 따라 감아쥐면, <b>엄지</b>가 가리키는 쪽이 코일 내부의 자기장 방향 = <b>N극</b>!',
+'코일 <b>내부</b> 자기장은 <i>직선</i> 모양, <b>외부</b>는 <i>막대자석</i> 주위와 비슷한 모양이야. 그래서 코일 <b>안과 바로 위·아래</b>는 나침반이 <b>반대</b> 방향을 가리켜!',
+'전류 방향이 바뀌면 자기장 방향도 바뀌어. 전류가 셀수록, 코일을 촘촘히 감을수록 자기장이 세져.'],
+q:[
+{q:'오른손 네 손가락을 전류 방향으로 감아쥘 때, 엄지손가락이 가리키는 것은?',c:['코일 내부의 자기장 방향(N극 쪽)','전류가 흐르는 방향','코일 내부의 S극 쪽','코일이 받는 힘의 방향'],a:0,e:'엄지 = <b>코일 내부 자기장 방향</b> = 나침반 N극이 가리키는 방향 = 코일의 N극 쪽.'},
+{q:'전류가 흐르는 코일 내부의 자기장 모양은?',c:['직선 모양','동심원 모양','막대자석 주위와 비슷한 모양','소용돌이 모양'],a:0,e:'코일 <b>내부는 직선</b>, 외부는 막대자석 주위와 비슷한 모양!'},
+{q:'코일 내부에 놓인 나침반 N극이 동쪽을 가리킨다. 코일 바로 위에 놓인 나침반 N극은?',c:['서쪽','동쪽','북쪽','남쪽'],a:0,e:'자기력선은 내부에서 한 방향, 외부에서 돌아오니까 <b>코일 안과 바로 위·아래는 반대 방향</b> → 서쪽!'},
+{q:'코일에 흐르는 전류의 방향을 반대로 바꾸면?',c:['나침반 N극이 가리키는 방향이 반대로 바뀐다','나침반이 움직이지 않는다','자기장이 사라진다','자기장이 더 세진다'],a:0,e:'전류 방향이 바뀌면 <b>자기장 방향이 바뀌어</b> 나침반도 반대로!'},
+{q:'코일 주위 자기장을 세게 만드는 방법이 아닌 것은?',c:['코일을 듬성듬성 감는다','전류를 세게 흐르게 한다','코일을 촘촘히 감는다','코일 속에 철심을 넣는다'],a:0,e:'세게 하려면 전류↑, <b>코일을 촘촘히</b>, 철심 넣기! 듬성듬성은 반대.'},
+{q:'직선 도선 주위에 생기는 자기장의 모양은?',c:['도선을 중심으로 한 동심원 모양','도선과 나란한 직선 모양','막대자석과 같은 모양','자기장이 생기지 않는다'],a:0,e:'직선 도선 → <b>동심원</b>. 도선 위와 아래에서는 자기장 방향이 반대야.'}]},
+{t:'전자석 공장',sub:'코일 + 철심 = 전자석',mon:['#9aa3b5','#ef4b42'],mn:'철심몬',sim:'emag',
+talk:['세 번째 관문은 공장이야! <b>전자석</b>은 코일 속에 <b>철심</b>을 넣어 만든 자석이야.',
+'중요! 전자석은 <b>전류가 흐르는 동안에만</b> 자석이 돼. 스위치를 끄면 그냥 쇳덩어리!',
+'<b>철심의 역할</b>: 코일의 자기장 + 철심의 자기장이 합쳐져서 코일만 있을 때보다 <b>더 센</b> 자기장을 만들어.',
+'전류 방향을 바꾸면 <b>극이 바뀌고</b>, 전류가 셀수록·촘촘히 감을수록 <b>세져</b>. 자기 부상 열차, 전자석 기중기, 스피커, MRI에 쓰여!'],
+q:[
+{q:'전자석에 대한 설명으로 옳은 것은?',c:['코일 속에 철심을 넣어 만든 자석이다','항상 자석의 성질을 가진다','극을 바꿀 수 없다','세기를 조절할 수 없다'],a:0,e:'전자석 = <b>코일 + 철심</b>. 전류가 흐를 때만 자석!'},
+{q:'전자석이 자석의 성질을 갖는 때는?',c:['코일에 전류가 흐르는 동안에만','전류를 끊은 뒤에만','항상','철심을 빼냈을 때만'],a:0,e:'<b>전류가 흐르는 동안에만</b> 자석이 된다. 이게 영구 자석과의 차이!'},
+{q:'전자석의 N극과 S극을 서로 바꾸려면?',c:['전류의 방향을 반대로 한다','전류를 더 세게 한다','코일을 더 감는다','철심을 더 굵게 한다'],a:0,e:'<b>전류 방향</b>이 바뀌면 극이 바뀐다.'},
+{q:'코일에 철심을 넣으면 자기장이 세지는 까닭은?',c:['코일의 자기장과 철심의 자기장이 합쳐지기 때문','철심이 전류를 막아 주기 때문','철심이 전류를 세게 만들기 때문','철심이 열을 내기 때문'],a:0,e:'코일 자기장 + <b>철심이 자석이 되어 만든 자기장</b>이 합쳐져서 더 세다.'},
+{q:'다음 중 전자석을 이용한 예가 아닌 것은?',c:['나침반','자기 부상 열차','전자석 기중기','자기 공명 영상(MRI) 장치'],a:0,e:'나침반 바늘은 <b>영구 자석</b>! 나머지는 전자석 이용.'},
+{q:'전자석의 세기를 가장 세게 하는 조합은?',c:['센 전류 + 촘촘히 감은 코일 + 철심','약한 전류 + 촘촘히 감은 코일 + 철심','센 전류 + 듬성듬성 감은 코일','센 전류 + 촘촘히 감은 코일 + 철심 빼기'],a:0,e:'전류↑ · 촘촘히 · <b>철심</b> 세 가지가 모두 있어야 최강!'}]},
+{t:'밀당 계곡',sub:'자기장 속에서 코일이 받는 힘',mon:['#3479ee','#ef4b42'],mn:'밀당몬',sim:'force',
+talk:['네 번째 관문! 자석의 자기장 안에 놓인 코일에 전류가 흐르면, 코일과 자석이 상호 작용해서 <b>코일이 힘을 받아</b>.',
+'코일도 자석처럼 극이 생기잖아? 그래서 자석과 코일이 <b>같은 극</b>끼리 마주 보면 <b>밀어내고</b>, <i>다른 극</i>끼리 마주 보면 <i>끌어당겨</i>!',
+'<b>자석 방향</b>이나 <b>전류 방향</b> 중 하나를 반대로 하면 힘의 방향도 반대! 그런데 <b>둘 다</b> 반대로 하면? 직접 실험해 봐!',
+'직선 도선은 오른손을 펴서 <b>엄지=전류</b>, <b>네 손가락=자기장</b>으로 하면 <b>손바닥이 향하는 쪽</b>으로 힘을 받아. 힘은 전류와 자기장에 각각 수직!'],
+q:[
+{q:'자석과 코일이 같은 극끼리 마주 보면 코일은 어떤 힘을 받을까?',c:['서로 밀어내는 힘','서로 끌어당기는 힘','힘을 받지 않는다','위로 뜨는 힘'],a:0,e:'같은 극 → <b>밀어냄</b>, 다른 극 → 끌어당김.'},
+{q:'자석의 방향만 반대로 바꾸면 코일이 받는 힘의 방향은?',c:['반대가 된다','그대로이다','사라진다','두 배가 된다'],a:0,e:'자석 방향 또는 전류 방향 중 <b>하나만</b> 바꾸면 힘의 방향이 <b>반대</b>!'},
+{q:'자석의 방향과 전류의 방향을 둘 다 반대로 바꾸면 힘의 방향은?',c:['처음과 같다','반대가 된다','힘을 받지 않는다','위아래로 바뀐다'],a:0,e:'반대 × 반대 = <b>원래대로</b>! 시험에 자주 나오는 함정이야.'},
+{q:'자기장 속 직선 도선이 받는 힘의 방향은?',c:['전류와 자기장의 방향에 각각 수직인 방향','전류와 같은 방향','자기장과 같은 방향','전류와 반대 방향'],a:0,e:'힘은 <b>전류와 자기장에 각각 수직</b>!'},
+{q:'오른손을 펴서 엄지를 전류, 네 손가락을 자기장 방향으로 할 때 힘의 방향은?',c:['손바닥이 향하는 방향','손등이 향하는 방향','엄지가 가리키는 방향','네 손가락이 가리키는 방향'],a:0,e:'엄지=전류, 네 손가락=자기장, <b>손바닥=힘</b>.'},
+{q:'코일이 받는 힘을 크게 하는 방법으로 옳은 것은?',c:['더 강한 자석을 사용한다','저항을 크게 한다','전압을 작게 한다','자석을 멀리 놓는다'],a:0,e:'<b>강한 자석</b>, 전압을 크게 하거나 저항을 작게 해서 <b>전류를 세게</b>!'}]},
+{t:'전동기 엔진실',sub:'코일이 받는 힘으로 돌아가는 전동기',mon:['#3ddc84','#3479ee'],mn:'모터몬',sim:'motor',
+talk:['다섯 번째 관문은 엔진실! <b>전동기</b>는 코일과 자석으로 되어 있고, <b>고정된 자석 사이에서 코일이 회전</b>해.',
+'원리: N극과 N극은 밀어내고, N극과 S극은 당기지. 그런데 코일이 끝까지 돌아 붙으면 멈춰 버리잖아?',
+'그래서 <b>정류자</b>가 있어! 코일이 반 바퀴 돌 때마다 <b>전류 방향을 바꿔서 코일의 N극과 S극을 바꿔 줘</b>. 그래서 계속 한 방향으로 돌아!',
+'전동기는 드론, 세탁기, 선풍기, 전기 자동차, 엘리베이터, 에스컬레이터에 쓰여. 실험실에서 정류자를 빼 보면 어떻게 되는지 봐!'],
+q:[
+{q:'전동기에서 정류자의 역할은?',c:['코일에 흐르는 전류의 방향을 바꿔 준다','전류를 세게 만든다','자석의 극을 바꿔 준다','코일을 식혀 준다'],a:0,e:'정류자 = <b>전류 방향을 주기적으로 바꿔</b> 코일이 계속 한 방향으로 돌게 한다.'},
+{q:'전동기에서 회전하는 부분은?',c:['코일(회전자)','고정된 자석','브러시','전지'],a:0,e:'<b>고정된 자석 사이에서 코일이 회전</b>한다.'},
+{q:'전동기에 정류자가 없다면 코일은 어떻게 될까?',c:['계속 돌지 못하고 멈춘다','더 빨리 돈다','반대 방향으로 계속 돈다','아무 변화가 없다'],a:0,e:'극이 바뀌지 않으니 코일이 자석에 끌린 위치에서 <b>멈춰 버린다</b>.'},
+{q:'다음 중 전동기를 이용한 기구가 아닌 것은?',c:['전기다리미','선풍기','세탁기','엘리베이터'],a:0,e:'전기다리미는 전기로 <b>열</b>을 내는 기구! 전동기는 돌아가는 기구에 쓰여.'},
+{q:'전동기의 회전 방향을 반대로 바꾸려면?',c:['전류의 방향을 반대로 한다','전류를 더 세게 한다','정류자를 하나 더 단다','코일을 더 감는다'],a:0,e:'<b>전류 방향(또는 자석 방향)</b>을 반대로 하면 회전 방향도 반대.'},
+{q:'전동기 코일의 N극이 고정된 자석의 N극과 마주 보는 순간 작용하는 힘은?',c:['서로 미는 힘','서로 당기는 힘','힘이 작용하지 않는다','위로 뜨는 힘'],a:0,e:'N극과 N극 → <b>서로 밀어낸다</b>. 이 밀고 당기는 힘으로 회전!'}]},
+{t:'스피커 콘서트홀',sub:'코일이 받는 힘으로 소리를 내는 스피커',mon:['#ffd23a','#ef4b42'],mn:'쿵쾅몬',sim:'speaker',
+talk:['마지막 관문! 스피커 안에는 <b>고정된 자석</b>과 <b>진동판에 연결된 코일</b>이 있어.',
+'코일에 흐르는 전류의 방향이 바뀌면 코일이 받는 <b>힘의 방향이 바뀌어</b>. 그래서 코일이 <b>앞뒤로 흔들려</b>!',
+'코일이 흔들리면 붙어 있는 <b>진동판</b>이 진동하고, 그 진동이 공기를 흔들어 <b>소리</b>가 나는 거야.',
+'움직이는 건 <b>코일과 진동판</b>, 자석은 <b>고정</b>! 실험실에서 전류 방향을 직접 바꿔 봐.'],
+q:[
+{q:'스피커 안에서 앞뒤로 진동하는 것은?',c:['코일과 진동판','자석','스피커 상자','전선만'],a:0,e:'자석은 고정, <b>코일과 진동판</b>이 움직인다.'},
+{q:'스피커의 코일이 앞뒤로 흔들리는 까닭은?',c:['코일에 흐르는 전류의 방향이 계속 바뀌기 때문','자석의 극이 계속 바뀌기 때문','진동판이 스스로 떨기 때문','전류가 항상 한 방향이기 때문'],a:0,e:'전류 방향이 바뀌면 <b>힘의 방향이 바뀌어</b> 코일이 앞뒤로 흔들린다.'},
+{q:'스피커 코일에 한 방향으로 일정한 전류만 흐르면?',c:['코일이 한쪽으로 밀린 채 진동하지 않아 소리가 계속 나지 않는다','더 큰 소리가 난다','높은 소리가 난다','자석이 진동한다'],a:0,e:'방향이 바뀌지 않으면 <b>앞뒤 진동이 없다</b> → 소리가 계속 나지 않는다.'},
+{q:'스피커와 같은 원리(자기장 속 코일이 받는 힘)를 이용한 것은?',c:['전동기','나침반','전기다리미','건전지'],a:0,e:'스피커와 <b>전동기</b> 모두 자기장 속에서 전류가 흐르는 코일이 받는 힘을 이용!'},
+{q:'스피커의 구조에 대한 설명으로 옳은 것은?',c:['고정된 자석과 진동판에 연결된 코일이 있다','움직이는 자석과 고정된 코일이 있다','정류자와 브러시가 있다','철심만 들어 있다'],a:0,e:'<b>고정된 자석 + 진동판에 연결된 코일</b>!'},
+{q:'스피커 코일에 흐르는 전류의 세기를 크게 하면?',c:['코일이 받는 힘이 커져 진동판이 더 크게 흔들린다','진동판이 멈춘다','자석의 극이 바뀐다','코일이 받는 힘이 작아진다'],a:0,e:'전류↑ → <b>힘↑</b> → 진동이 커진다.'}]}
+];
+const BOSS={t:'최종 보스: 메가 마그몬',mon:['#ef4b42','#3479ee'],mn:'메가 마그몬',
+q:[
+{q:'방위 표시에서 "북"이 그림의 왼쪽을 향하고 있다. 나침반 N극이 그림의 왼쪽을 가리키면 실제 방위는?',c:['북쪽','동쪽','서쪽','남쪽'],a:0,e:'방위 표시를 꼭 확인! 그림의 왼쪽 = <b>북쪽</b>. 그림의 위쪽이 항상 북쪽은 아니야.'},
+{q:'코일 내부(B)의 나침반 N극이 북쪽을 가리킨다. 코일 바로 위(A)와 바로 아래(C)의 나침반 N극은?',c:['A: 남쪽, C: 남쪽','A: 북쪽, C: 북쪽','A: 남쪽, C: 북쪽','A: 북쪽, C: 남쪽'],a:0,e:'내부와 외부(바로 위·아래)는 반대 → A·C 모두 <b>남쪽</b>.'},
+{q:'자석 방향과 전류 방향을 동시에 반대로 바꾸었을 때 코일이 받는 힘은?',c:['방향이 처음과 같다','방향이 반대가 된다','힘이 사라진다','힘이 두 배가 된다'],a:0,e:'둘 다 바꾸면 <b>원래 방향</b>!'},
+{q:'다음 중 옳은 것은?',c:['자기력선은 N극에서 나와 S극으로 들어간다','자기력선은 간격이 넓을수록 자기장이 세다','자기력선은 서로 교차할 수 있다','자기력선은 S극에서 나와 N극으로 들어간다'],a:0,e:'<b>N → S</b>, 촘촘할수록 세다, 교차 X.'},
+{q:'직선 도선 바로 위에 놓은 나침반과 바로 아래에 놓은 나침반의 N극 방향은?',c:['서로 반대 방향','서로 같은 방향','둘 다 도선을 향한다','둘 다 움직이지 않는다'],a:0,e:'도선의 위와 아래에는 <b>반대 방향</b>의 자기장이 생긴다.'},
+{q:'전자석의 스위치를 끄면 붙어 있던 클립은?',c:['떨어진다','계속 붙어 있다','더 세게 붙는다','반대쪽으로 옮겨 붙는다'],a:0,e:'전류가 흐를 때만 자석 → 끄면 <b>떨어진다</b>.'},
+{q:'원형 도선 내부(중심)에 생기는 자기장의 모양은?',c:['직선 모양','동심원 모양','막대자석과 똑같은 모양','자기장이 생기지 않는다'],a:0,e:'원형 도선: <b>내부는 직선</b>, 도선 가까이는 동심원 모양.'},
+{q:'자석 사이 코일에 전류가 흘러 코일이 오른쪽으로 밀려났다. 전류 방향만 반대로 하면?',c:['코일이 왼쪽으로 끌려간다','코일이 오른쪽으로 더 세게 밀린다','코일이 움직이지 않는다','코일이 위로 뜬다'],a:0,e:'전류 방향 하나만 바꾸면 힘 방향 <b>반대</b> → 왼쪽!'},
+{q:'전동기와 스피커의 공통점은?',c:['자기장 속에서 전류가 흐르는 코일이 받는 힘을 이용한다','정류자가 있다','코일이 회전한다','자석이 움직인다'],a:0,e:'둘 다 <b>코일이 받는 힘</b>! 정류자·회전은 전동기만.'},
+{q:'자기장의 세기를 크게 하는 방법이 바르게 짝지어진 것은?',c:['자기장: 강한 자석 / 전류: 전압↑, 저항↓','자기장: 약한 자석 / 전류: 전압↑','자기장: 강한 자석 / 전류: 저항↑','자기장: 자석을 멀리 / 전류: 전압↓'],a:0,e:'강한 자석 + <b>전압 크게, 저항 작게</b>.'},
+{q:'오른손 법칙(코일)으로 찾을 수 있는 것은?',c:['코일 내부 자기장의 방향','코일의 저항','전지의 전압','코일의 무게'],a:0,e:'네 손가락=전류, 엄지=<b>코일 내부 자기장(N극)</b>.'},
+{q:'전동기 코일의 자기장과 자석의 자기장이 나란하게 되는 순간 일어나는 일은?',c:['정류자에 의해 전류 방향이 바뀌어 코일의 N극·S극이 바뀐다','코일이 멈춘다','자석의 극이 바뀐다','전류가 끊어진다'],a:0,e:'나란해지는 순간 <b>전류 방향이 바뀌어</b> 다시 밀어내며 계속 회전!'}]};
+
+/* ---------- 화면: 맵 ---------- */
+function unlocked(i){return SAVE.all||i===0||SAVE.stars[i-1]>0}
+function home(){
+stopAll();
+const total=Object.values(SAVE.stars).reduce((a,b)=>a+b,0);
+const bossOpen=SAVE.all||STAGES.every((_,i)=>SAVE.stars[i]>0);
+app.innerHTML=`<div class="hero"><img class="ava big" src="${IMG}" alt="조고숭">
+<div><h1>조고숭의<br><b>자기장 행성</b> 탈출</h1>
+<p>Ⅶ. 전류의 자기 작용 · 관문 6개 + 최종 보스<br>설명 듣기 → 직접 실험 → 퀴즈 배틀! 틀린 문제는 맞힐 때까지 다시 나와요.</p>
+<p class="jua" style="color:var(--y);font-size:20px;margin-top:8px">모은 별 ★ ${total} / ${STAGES.length*3+3}</p></div></div>
+<div class="map">${STAGES.map((s,i)=>`<button class="st" data-i="${i}" ${unlocked(i)?'':'disabled'}>
+<span class="num">${i+1}</span><span><h3>${s.t}</h3><small>${s.sub}</small><br>
+<span class="stars">${'★'.repeat(SAVE.stars[i]||0)}${'☆'.repeat(3-(SAVE.stars[i]||0))}</span>${SAVE.best[i]?` <small>최고 ${SAVE.best[i]}점</small>`:''}</span></button>`).join('')}
+<button class="st boss" data-i="boss" ${bossOpen?'':'disabled'}><span class="num">!</span><span><h3>최종 보스: 메가 마그몬</h3>
+<small>${bossOpen?'전 범위 함정 문제 12개 · 하트 5개 · 제한 시간 12초':'6개 관문을 모두 깨면 열려요'}</small><br>
+<span class="stars">${'★'.repeat(SAVE.stars.boss||0)}${'☆'.repeat(3-(SAVE.stars.boss||0))}</span></span></button></div>
+<p class="tiny" style="margin-top:18px">관문은 앞 관문을 깨야 열려요. <button class="link" id="all">${SAVE.all?'순서대로 열기로 되돌리기':'선생님 모드: 모든 관문 열기'}</button></p>`;
+app.querySelectorAll('.st').forEach(b=>b.onclick=()=>{beep(520,.06);b.dataset.i==='boss'?battle('boss'):talk(+b.dataset.i,0)});
+$('#all').onclick=()=>{SAVE.all=!SAVE.all;save(SAVE);home()};
+scrollTo(0,0);
+}
+
+/* ---------- 화면: 대화 ---------- */
+function talk(i,k){
+stopAll();const s=STAGES[i];
+app.innerHTML=`<div class="top"><h2>관문 ${i+1} · ${s.t}</h2><button class="btn2" id="back">맵</button></div>
+<div class="talk"><img class="ava" src="${IMG}" alt="조고숭"><div class="bub"><span class="who">조고숭</span>${s.talk[k]}</div></div>
+<div class="dots">${s.talk.map((_,j)=>`<span class="${j<=k?'on':''}"></span>`).join('')}</div>
+<div class="row">${k>0?'<button class="btn2" id="prev">이전</button>':''}<button class="btn" id="next">${k<s.talk.length-1?'다음':'실험실로 가기'}</button></div>`;
+$('#back').onclick=home;
+if(k>0)$('#prev').onclick=()=>talk(i,k-1);
+$('#next').onclick=()=>{beep(700,.05);k<s.talk.length-1?talk(i,k+1):lab(i)};
+scrollTo(0,0);
+}
+
+/* ---------- 화면: 실험실 ---------- */
+function lab(i){
+stopAll();const s=STAGES[i];
+app.innerHTML=`<div class="top"><h2>실험실 · ${s.sub}</h2><button class="btn2" id="back">맵</button></div>
+<div class="lab" id="lab"></div>
+<div class="row" style="margin-top:14px"><button class="btn2" id="re">설명 다시 듣기</button><button class="btn" id="go">배틀 시작!</button></div>`;
+$('#back').onclick=home;$('#re').onclick=()=>talk(i,0);$('#go').onclick=()=>battle(i);
+SIMS[s.sim]($('#lab'));scrollTo(0,0);
+}
+const say=t=>`<img src="${IMG}" alt=""><span>${t}</span>`;
+const arrowDefs=`<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ffd23a"/></marker><marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ff9a4a"/></marker></defs>`;
+function needle(x,y,deg){return `<g transform="translate(${x} ${y})"><circle r="19" fill="#e9edf5" stroke="#9aa3b5" stroke-width="2"/><g class="mv" style="transform:rotate(${deg}deg)"><path d="M0 -5 L16 0 L0 5Z" fill="#ef4b42"/><path d="M0 -5 L-16 0 L0 5Z" fill="#3479ee"/></g><circle r="2.5" fill="#222"/></g>`}
+function bar(x,y,w,h,left,right){return `<rect x="${x}" y="${y}" width="${w/2}" height="${h}" fill="${left==='N'?'#ef4b42':'#3479ee'}"/><rect x="${x+w/2}" y="${y}" width="${w/2}" height="${h}" fill="${right==='N'?'#ef4b42':'#3479ee'}"/><text x="${x+w/4}" y="${y+h/2+8}" text-anchor="middle" fill="#fff" font-size="24">${left}</text><text x="${x+w*3/4}" y="${y+h/2+8}" text-anchor="middle" fill="#fff" font-size="24">${right}</text>`}
+
+const SIMS={
+magnets(el){let flip=false;
+const draw=()=>{const facing=flip?'N':'S';const attract=facing==='N';
+const lines=attract?[110,130,150].map((y,j)=>`<path d="M370 ${y+ (j-1)*4} L230 ${y+(j-1)*4}" stroke="#ffd23a" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>`).join('')+`<path d="M372 112 Q300 60 228 112" stroke="#ffd23a" stroke-width="2" fill="none" marker-end="url(#ar)"/><path d="M372 148 Q300 200 228 148" stroke="#ffd23a" stroke-width="2" fill="none" marker-end="url(#ar)"/>`
+:`<path d="M300 40 Q262 70 232 112" stroke="#ffd23a" stroke-width="2.5" fill="none" marker-end="url(#ar)"/><path d="M300 220 Q262 190 232 148" stroke="#ffd23a" stroke-width="2.5" fill="none" marker-end="url(#ar)"/><path d="M300 40 Q338 70 368 112" stroke="#ffd23a" stroke-width="2.5" fill="none" marker-end="url(#ar)"/><path d="M300 220 Q338 190 368 148" stroke="#ffd23a" stroke-width="2.5" fill="none" marker-end="url(#ar)"/><text x="300" y="134" text-anchor="middle" fill="#ffd23a" font-size="15">교차 없음!</text>`;
+el.innerHTML=`<svg viewBox="0 0 600 260">${arrowDefs}${lines}
+<g class="mv" style="transform:translateX(${attract?-10:-30}px)">${bar(40,100,190,60,'N','S')}</g>
+<g class="mv" style="transform:translateX(${attract?10:30}px)">${bar(370,100,190,60,flip?'N':'S',flip?'S':'N')}</g>
+<text x="300" y="248" text-anchor="middle" fill="${attract?'#3ddc84':'#ef4b42'}" font-size="20">${attract?'← 끌어당기는 힘(인력) →':'← 밀어내는 힘(척력) →'}</text></svg>
+<div class="say">${say(attract?'S극과 N극이 마주 봤어! 다른 극 → <b style="color:var(--g)">끌어당긴다</b>. 자기력선이 N극에서 나와 S극으로 들어가지.':'S극과 S극이 마주 봤어! 같은 극 → <b style="color:var(--n)">밀어낸다</b>. 자기력선이 서로 이어지지 않고 휘어 들어가.')}</div>
+<div class="ctrl"><button class="btn2" id="f">오른쪽 자석 뒤집기</button></div>`;
+el.querySelector('#f').onclick=()=>{flip=!flip;beep(flip?400:500,.08);draw()}};draw()},
+
+coil(el){let d=1;
+const draw=()=>{const xs=[200,232,264,296,328,360,392];
+const back=xs.map(x=>`<path d="M${x} 100 A14 50 0 0 0 ${x} 200" stroke="#7a4a1c" stroke-width="5" fill="none"/>`).join('');
+const front=xs.map(x=>`<path d="M${x} 100 A14 50 0 0 1 ${x} 200" stroke="#e08a3a" stroke-width="6" fill="none"/><path d="M${x+14} ${d>0?140:160} L${x+14} ${d>0?162:138}" stroke="#ffe0b0" stroke-width="2" marker-end="url(#ac)"/>`).join('');
+const fx=d>0?0:180, out=d>0?180:0;
+el.innerHTML=`<svg viewBox="0 0 600 320">${arrowDefs}
+<ellipse cx="296" cy="150" rx="250" ry="120" stroke="#ffd23a" stroke-width="1.5" fill="none" stroke-dasharray="6 6" opacity=".7"/>
+<path d="M${d>0?330:262} 30 L${d>0?262:330} 30" stroke="#ffd23a" stroke-width="2.5" marker-end="url(#ar)"/>
+<path d="M${d>0?330:262} 270 L${d>0?262:330} 270" stroke="#ffd23a" stroke-width="2.5" marker-end="url(#ar)"/>
+${back}<path d="M${d>0?150:450} 150 L${d>0?450:150} 150" stroke="#ffd23a" stroke-width="3" marker-end="url(#ar)"/>${front}
+<path d="M200 200 L200 300" stroke="#e08a3a" stroke-width="5"/><path d="M392 200 L392 300" stroke="#e08a3a" stroke-width="5"/>
+<path d="M${d>0?'186 300 L186 240':'186 240 L186 300'}" stroke="#ff9a4a" stroke-width="2" marker-end="url(#ac)"/><path d="M${d>0?'406 240 L406 300':'406 300 L406 240'}" stroke="#ff9a4a" stroke-width="2" marker-end="url(#ac)"/>
+<text x="150" y="296" fill="#ff9a4a" font-size="15">전류</text>
+<text x="${d>0?470:96}" y="158" fill="${d>0?'#ef4b42':'#ef4b42'}" font-size="28">N</text><text x="${d>0?110:470}" y="158" fill="#3479ee" font-size="28">S</text>
+${needle(296,62,out)}<text x="322" y="56" fill="#fff" font-size="16">A</text>
+${needle(296,150,fx)}<text x="322" y="138" fill="#fff" font-size="16">B</text>
+${needle(296,238,out)}<text x="322" y="232" fill="#fff" font-size="16">C</text></svg>
+<div class="say">${say(`앞쪽 도선의 전류가 <b>${d>0?'아래로':'위로'}</b> 흐르게 네 손가락으로 감아쥐면 엄지는 <b style="color:var(--n)">${d>0?'오른쪽':'왼쪽'}</b> → 그쪽이 N극! 코일 안 B와 바깥 A·C는 <b style="color:var(--y)">반대 방향</b>이야.`)}</div>
+<div class="ctrl"><button class="btn2" id="f">전류 방향 바꾸기</button></div>`;
+el.querySelector('#f').onclick=()=>{d=-d;beep(d>0?500:400,.08);draw()}};draw()},
+
+emag(el){let on=true,cur=2,turns=2,core=true,d=1;
+const draw=()=>{const st=on?cur*turns*(core?3:1):0, max=27, clips=Math.min(9,Math.round(st/3));
+const n=turns*5, w=260, x0=170;
+const loops=Array.from({length:n},(_,j)=>{const x=x0+10+j*(w-20)/(n-1);return `<path d="M${x} 105 A10 45 0 0 1 ${x} 195" stroke="${on?'#ffa04a':'#7a4a1c'}" stroke-width="${3+cur}" fill="none"/>`}).join('');
+const L=d>0?'S':'N', R=d>0?'N':'S';
+el.innerHTML=`<svg viewBox="0 0 600 300">
+${core?`<rect x="${x0-20}" y="125" width="${w+40}" height="50" rx="6" fill="#8c93a3"/><text x="${x0+w/2}" y="230" text-anchor="middle" fill="#9aa3b5" font-size="14">철심</text>`:`<text x="${x0+w/2}" y="230" text-anchor="middle" fill="#9aa3b5" font-size="14">철심 없음 (빈 코일)</text>`}
+${loops}
+${on?`<text x="${x0-50}" y="160" fill="${L==='N'?'#ef4b42':'#3479ee'}" font-size="30">${L}</text><text x="${x0+w+28}" y="160" fill="${R==='N'?'#ef4b42':'#3479ee'}" font-size="30">${R}</text>`:''}
+${on&&st>0?`<circle cx="${x0+w+45}" cy="150" r="${30+st*2}" fill="#ffd23a" opacity=".08"/>`:''}
+${Array.from({length:9},(_,j)=>{const stuck=j<clips;const x=stuck?x0+w+60+(j%3)*22:420+j*18, y=stuck?120+Math.floor(j/3)*28:270;return `<g class="mv" style="transform:translate(${x}px,${y}px)"><rect width="9" height="22" rx="4" fill="none" stroke="#cfd6e4" stroke-width="2.5"/></g>`}).join('')}
+<text x="20" y="34" fill="#fff" font-size="18">세기 ${st} / ${max}</text></svg>
+<div class="meter" style="margin-top:10px"><i style="width:${st/max*100}%"></i></div>
+<div class="say">${say(!on?'스위치를 끄니까 자석이 아니야! 클립이 다 떨어졌지? <b style="color:var(--y)">전류가 흐를 때만 자석</b>!':`클립 <b style="color:var(--y)">${clips}개</b>를 붙였어! ${core?'철심 덕분에 자기장이 합쳐져서 세졌어.':'철심을 넣으면 훨씬 세질 거야.'} 오른쪽이 <b style="color:${R==='N'?'var(--n)':'var(--s)'}">${R}극</b>.`)}</div>
+<div class="ctrl"><button class="btn2 ${on?'on':''}" id="on">스위치 ${on?'ON':'OFF'}</button><button class="btn2 ${core?'on':''}" id="core">철심 ${core?'넣음':'뺌'}</button><button class="btn2" id="dir">전류 방향 바꾸기</button>
+<label>전류 세기<input type="range" id="cur" min="1" max="3" value="${cur}"></label><label>코일 감은 수(촘촘함)<input type="range" id="tu" min="1" max="3" value="${turns}"></label></div>`;
+const q=s=>el.querySelector(s);
+q('#on').onclick=()=>{on=!on;beep(on?700:200,.1);draw()};q('#core').onclick=()=>{core=!core;beep(500,.06);draw()};
+q('#dir').onclick=()=>{d=-d;beep(450,.06);draw()};q('#cur').oninput=e=>{cur=+e.target.value;draw()};q('#tu').oninput=e=>{turns=+e.target.value;draw()}};draw()},
+
+force(el){let mf=false,cf=false;
+const draw=()=>{const magR=mf?'S':'N', coilL=cf?'N':'S', same=magR===coilL;
+const loops=Array.from({length:9},(_,j)=>`<path d="M${350+j*18} 105 A10 45 0 0 1 ${350+j*18} 195" stroke="#e08a3a" stroke-width="5" fill="none"/>`).join('');
+el.innerHTML=`<svg viewBox="0 0 600 280">${arrowDefs}
+${bar(40,115,200,70,mf?'N':'S',magR)}
+<g class="mv" style="transform:translateX(${same?50:-40}px)">${loops}<path d="M350 195 L350 240M494 195 L494 240" stroke="#e08a3a" stroke-width="4"/>
+<circle cx="326" cy="150" r="16" fill="${coilL==='N'?'#ef4b42':'#3479ee'}"/><text x="326" y="157" text-anchor="middle" fill="#fff" font-size="18">${coilL}</text>
+<circle cx="520" cy="150" r="16" fill="${coilL==='N'?'#3479ee':'#ef4b42'}"/><text x="520" y="157" text-anchor="middle" fill="#fff" font-size="18">${coilL==='N'?'S':'N'}</text>
+<text x="420" y="262" text-anchor="middle" fill="#ff9a4a" font-size="14">전류 ${cf?'⟲':'⟳'}</text></g>
+<path d="${same?'M440 60 L540 60':'M440 60 L340 60'}" stroke="${same?'#ef4b42':'#3ddc84'}" stroke-width="8" marker-end="url(#ar)"/>
+<text x="300" y="40" text-anchor="middle" fill="${same?'#ef4b42':'#3ddc84'}" font-size="20">${same?'같은 극 → 밀어낸다!':'다른 극 → 끌어당긴다!'}</text></svg>
+<div class="say">${say(`자석 ${magR}극 ↔ 코일 ${coilL}극. ${mf&&cf?'<b style="color:var(--y)">자석도 전류도 둘 다 뒤집었더니 처음과 똑같이 밀어내지?</b> 반대×반대=원래대로!':same?'같은 극이라 코일이 <b style="color:var(--n)">밀려나</b>.':'다른 극이라 코일이 <b style="color:var(--g)">끌려와</b>.'}`)}</div>
+<div class="ctrl"><button class="btn2 ${mf?'on':''}" id="m">자석 방향 뒤집기</button><button class="btn2 ${cf?'on':''}" id="c">전류 방향 바꾸기</button></div>`;
+el.querySelector('#m').onclick=()=>{mf=!mf;beep(420,.08);draw()};el.querySelector('#c').onclick=()=>{cf=!cf;beep(520,.08);draw()}};draw()},
+
+motor(el){let comm=true,dir=1,pow=2,ang=30,w=0,flip=false,last=0,flash=0;
+el.innerHTML=`<svg viewBox="0 0 600 300" id="ms">
+<rect x="40" y="70" width="130" height="160" rx="10" fill="#ef4b42"/><text x="105" y="168" text-anchor="middle" fill="#fff" font-size="44">N</text>
+<rect x="430" y="70" width="130" height="160" rx="10" fill="#3479ee"/><text x="495" y="168" text-anchor="middle" fill="#fff" font-size="44">S</text>
+<circle cx="300" cy="150" r="118" fill="none" stroke="#343a50" stroke-dasharray="4 8"/>
+<g id="rot"><rect x="200" y="132" width="200" height="36" rx="10" fill="#e08a3a"/>
+<rect x="200" y="132" width="44" height="36" rx="10" id="eA"/><rect x="356" y="132" width="44" height="36" rx="10" id="eB"/>
+<text x="222" y="158" text-anchor="middle" fill="#fff" font-size="22" id="tA">N</text><text x="378" y="158" text-anchor="middle" fill="#fff" font-size="22" id="tB">S</text></g>
+<circle cx="300" cy="150" r="10" fill="#222" stroke="#ffd23a" stroke-width="3"/>
+<text x="300" y="285" text-anchor="middle" font-size="20" fill="#ffd23a" id="fl" opacity="0">정류자: 전류 방향 바뀜! → 극 교대</text></svg>
+<div class="say" id="msay"></div>
+<div class="ctrl"><button class="btn2 on" id="cm">정류자 있음</button><button class="btn2" id="dr">전류 방향 바꾸기</button><label>전류 세기<input type="range" id="pw" min="1" max="3" value="2"></label></div>`;
+const q=s=>el.querySelector(s);
+const setTxt=()=>{q('#msay').innerHTML=say(comm?`정류자가 반 바퀴마다 전류 방향을 바꿔서 코일의 N·S가 바뀌어. 그래서 <b style="color:var(--y)">${dir>0?'시계 방향':'반시계 방향'}</b>으로 계속 돌아!`:'정류자를 뺐더니… 코일 N극이 자석 S극 쪽에 끌려가서 <b style="color:var(--n)">멈춰 버렸어!</b>')};
+q('#cm').onclick=e=>{comm=!comm;e.target.textContent=comm?'정류자 있음':'정류자 뺌';e.target.classList.toggle('on',comm);if(comm&&Math.abs(w)<.5)w=dir*2;beep(500,.06);setTxt()};
+q('#dr').onclick=()=>{dir=-dir;if(!comm){flip=!flip}beep(420,.06);setTxt()};
+q('#pw').oninput=e=>{pow=+e.target.value};
+setTxt();
+const tick=t=>{const dt=Math.min(.05,(t-(last||t))/1000);last=t;
+if(comm){const target=dir*pow*120;w+=(target-w)*Math.min(1,dt*3);const before=Math.floor(ang/180);ang+=w*dt;if(Math.floor(ang/180)!==before){flip=!flip;flash=1;beep(880,.03,'square',.03)}}
+else{const nEnd=flip?ang+180:ang;const th=(((nEnd%360)+540)%360-180)*Math.PI/180;const tq=-pow*600*Math.sin(th);w+=(tq-w*2.2)*dt;ang+=w*dt}
+flash=Math.max(0,flash-dt*1.5);
+q('#rot').setAttribute('transform',`rotate(${ang} 300 150)`);
+const a=flip?'S':'N',b=flip?'N':'S';q('#tA').textContent=a;q('#tB').textContent=b;
+q('#eA').setAttribute('fill',a==='N'?'#ef4b42':'#3479ee');q('#eB').setAttribute('fill',b==='N'?'#ef4b42':'#3479ee');
+q('#tA').setAttribute('transform',`rotate(${-ang} 222 150)`);q('#tB').setAttribute('transform',`rotate(${-ang} 378 150)`);
+q('#fl').setAttribute('opacity',comm?flash:0);
+anim=requestAnimationFrame(tick)};anim=requestAnimationFrame(tick)},
+
+speaker(el){let mode='stop',off=0,last=0,ph=0;
+el.innerHTML=`<svg viewBox="0 0 600 280">
+<rect x="60" y="100" width="70" height="80" fill="#ef4b42"/><rect x="130" y="100" width="70" height="80" fill="#3479ee"/>
+<text x="95" y="150" text-anchor="middle" fill="#fff" font-size="24">N</text><text x="165" y="150" text-anchor="middle" fill="#fff" font-size="24">S</text>
+<text x="130" y="210" text-anchor="middle" fill="#9aa3b5" font-size="14">자석 (고정)</text>
+<g id="cone"><path d="M215 112 L215 168 L245 168 L245 112Z" fill="#e08a3a"/>
+${[0,1,2,3].map(j=>`<line x1="${219+j*7}" y1="110" x2="${219+j*7}" y2="170" stroke="#7a4a1c" stroke-width="2"/>`).join('')}
+<path d="M245 120 L400 40 L400 240 L245 160Z" fill="#cfd6e4" opacity=".9"/><text x="340" y="146" text-anchor="middle" fill="#1d2130" font-size="16">진동판</text>
+<text x="230" y="100" text-anchor="middle" fill="#ff9a4a" font-size="14">코일</text></g>
+<g id="waves">${[0,1,2].map(j=>`<path d="M${440+j*40} 80 Q${470+j*40} 140 ${440+j*40} 200" stroke="#ffd23a" stroke-width="4" fill="none" opacity="0" id="w${j}"/>`).join('')}</g></svg>
+<div class="say" id="ssay"></div>
+<div class="ctrl"><button class="btn2" id="a">전류 → 한 방향</button><button class="btn2" id="b">전류 ← 반대 방향</button><button class="btn" id="m">방향이 계속 바뀌는 전류 (소리!)</button><button class="btn2" id="s">멈춤</button></div>`;
+const q=s=>el.querySelector(s);
+const txt={stop:'버튼을 눌러 코일에 전류를 흘려 봐!',a:'전류가 한 방향 → 코일이 <b>앞으로 밀린 채</b> 그대로. 진동이 없어서 소리가 계속 나지 않아.',b:'전류 방향을 바꾸니 힘의 방향도 반대 → 코일이 <b>뒤로</b> 당겨졌어!',m:'전류 방향이 계속 바뀌니까 힘의 방향도 계속 바뀌어 → 코일·진동판이 <b style="color:var(--y)">앞뒤로 진동 → 소리!</b>'};
+const set=m=>{mode=m;q('#ssay').innerHTML=say(txt[m]);
+if(window._osc){try{window._osc.stop()}catch(e){}window._osc=null}
+if(m==='m'){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=262;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();
+[262,330,392,523,392,330].forEach((f,k)=>o.frequency.setValueAtTime(f,AC.currentTime+k*.35));o.stop(AC.currentTime+2.1);window._osc=o;setTimeout(()=>{if(mode==='m')set('m')},2150)}catch(e){}}};
+q('#a').onclick=()=>set('a');q('#b').onclick=()=>set('b');q('#m').onclick=()=>set('m');q('#s').onclick=()=>set('stop');set('stop');
+const tick=t=>{const dt=Math.min(.05,(t-(last||t))/1000);last=t;ph+=dt;
+const target=mode==='a'?22:mode==='b'?-22:mode==='m'?Math.sin(ph*40)*16:0;off+=(target-off)*(mode==='m'?1:Math.min(1,dt*10));
+q('#cone').setAttribute('transform',`translate(${off} 0)`);
+[0,1,2].forEach(j=>q('#w'+j).setAttribute('opacity',mode==='m'?(.5+.5*Math.sin(ph*8-j)).toFixed(2):0));
+anim=requestAnimationFrame(tick)};anim=requestAnimationFrame(tick)}
+};
+
+/* ---------- 화면: 배틀 ---------- */
+function battle(i){
+stopAll();const isB=i==='boss', s=isB?BOSS:STAGES[i];
+const queue=shuffle(s.q).map(o=>{const order=shuffle(o.c.map((c,k)=>k));return {...o,c:order.map(k=>o.c[k]),a:order.indexOf(o.a)}});
+const total=queue.length;let hp=total,hearts=isB?5:3,maxH=hearts,combo=0,maxCombo=0,score=0,wrong=[],n=0;const LIM=isB?12:15;
+app.innerHTML=`<div class="top"><h2>${isB?'최종 보스전':'배틀 · '+s.t}</h2><button class="btn2" id="back">맵</button></div>
+<div class="arena"><div class="fighter" id="me"><img class="ava big" src="${IMG}" alt="조고숭" style="width:min(30vw,140px);height:min(30vw,140px)"><div class="nm">조고숭</div><div class="hearts" id="hearts"></div></div>
+<div class="vs">VS</div>
+<div class="fighter" id="foe">${mon(s.mon[0],s.mon[1],isB)}<div class="nm">${s.mn}</div><div class="hp"><i id="hp"></i></div></div></div>
+<div class="hud"><span>점수 <b id="sc">0</b></span><span class="combo" id="cb"></span><span id="left"></span></div>
+<div class="timer"><i id="tm"></i></div><div id="q"></div>`;
+$('#back').onclick=home;
+const upd=()=>{$('#hearts').textContent='♥'.repeat(hearts)+'♡'.repeat(maxH-hearts);$('#hp').style.width=(hp/total*100)+'%';$('#sc').textContent=score;$('#cb').textContent=combo>1?combo+' COMBO!':'';$('#left').textContent=`남은 몬스터 체력 ${hp}`};
+const anim2=(id,c)=>{const e=$(id);e.classList.remove(c);void e.offsetWidth;e.classList.add(c)};
+function ask(){
+clearInterval(tmr);upd();
+if(hp<=0)return finish(true);if(hearts<=0)return finish(false);
+const o=queue.shift();n++;let t=LIM,done=false;
+$('#q').innerHTML=`<div class="qcard"><div class="qn">${o.re?'다시 나온 문제 · ':''}문제 ${n}</div><h2>${o.q}</h2><div class="ch">${o.c.map((c,k)=>`<button data-k="${k}">${'①②③④'[k]} ${c}</button>`).join('')}</div><div id="ex"></div></div>`;
+const tm=$('#tm');tm.style.width='100%';const t0=Date.now();
+tmr=setInterval(()=>{t=LIM-(Date.now()-t0)/1000;tm.style.width=Math.max(0,t/LIM*100)+'%';tm.style.background=t<4?'var(--n)':'var(--y)';if(t<=0&&!done)pick(-1)},100);
+const btns=[...document.querySelectorAll('.ch button')];
+btns.forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+function pick(k){if(done)return;done=true;clearInterval(tmr);btns.forEach(b=>b.disabled=true);
+btns[o.a].classList.add('ok');
+if(k===o.a){combo++;maxCombo=Math.max(maxCombo,combo);hp--;const gain=100+Math.round(Math.max(0,t)*10)+(combo>1?combo*20:0);score+=gain;sGood();anim2('#foe','hit');floatTxt(combo>1?`${combo} COMBO +${gain}`:`+${gain}`);upd();setTimeout(ask,850)}
+else{if(k>=0)btns[k].classList.add('no');combo=0;hearts--;sBad();anim2('#me','shake');floatTxt(k<0?'시간 초과!':'아야!',true);
+if(!wrong.includes(o))wrong.push(o);queue.push({...o,re:true});upd();
+$('#ex').innerHTML=`<div class="exp"><b>정답 ${'①②③④'[o.a]}</b> · ${o.e}<br><small>이 문제는 뒤에서 다시 나와요!</small></div><button class="btn" style="margin-top:10px;width:100%" id="nx">${hearts>0?'다음 문제':'결과 보기'}</button>`;
+$('#nx').onclick=ask;$('#nx').focus()}}}
+function finish(win){clearInterval(tmr);const key=isB?'boss':i;const stars=win?Math.max(1,Math.round(hearts/maxH*3)):0;
+if(win){SAVE.stars[key]=Math.max(SAVE.stars[key]||0,stars);SAVE.best[key]=Math.max(SAVE.best[key]||0,score);save(SAVE)}
+if(win){[523,659,784,1047].forEach((f,k)=>setTimeout(()=>beep(f,.15,'square',.05),k*120))}
+const nextI=!isB&&i<STAGES.length-1?i+1:null;
+app.innerHTML=`<div class="result">${win?`<img class="ava big" src="${IMG}" alt="조고숭">`:mon(s.mon[0],s.mon[1],isB)}
+<div class="big">${win?(isB?'조고숭 탈출 성공!':s.mn+' 격파!'):'조고숭이 쓰러졌어…'}</div>
+${win?`<div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div>`:''}
+<p>점수 <b style="color:var(--y)">${score}</b> · 최대 콤보 ${maxCombo} · 틀린 문제 ${wrong.length}개${win&&SAVE.best[key]===score?' · <b style="color:var(--y)">최고 기록!</b>':''}</p>
+<p class="tiny">${win?(isB?'자기장 행성의 모든 관문을 통과했어! 고마워 친구!':'틀린 문제도 결국 다 맞혔어. 이게 바로 반복 훈련!'):'하트가 다 떨어졌어. 아래 해설을 읽고 다시 도전!'}</p>
+<div class="row" style="justify-content:center;margin:14px 0">${win&&nextI!==null?`<button class="btn" id="nx">다음 관문으로</button>`:''}<button class="${win&&nextI!==null?'btn2':'btn'}" id="rt">다시 도전</button><button class="btn2" id="mp">맵</button></div>
+${wrong.length?`<h3 style="text-align:left;margin:20px 0 4px">오늘 틀린 문제 복습</h3>`+wrong.map(o=>`<div class="rv">${o.q}<br><b>정답: ${o.c[o.a]}</b><br><span class="tiny">${o.e.replace(/<[^>]+>/g,'')}</span></div>`).join(''):''}</div>`;
+$('#rt').onclick=()=>battle(i);$('#mp').onclick=home;if(win&&nextI!==null)$('#nx').onclick=()=>talk(nextI,0);scrollTo(0,0)}
+ask();scrollTo(0,0);
+}
+home();
+let deferred=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;showInstall()});
+function showInstall(){if(!deferred||document.getElementById('inst'))return;const b=document.createElement('button');b.id='inst';b.className='btn';b.textContent='홈 화면에 앱 설치';b.style.cssText='position:fixed;right:14px;bottom:14px;z-index:20';b.onclick=async()=>{deferred.prompt();await deferred.userChoice;deferred=null;b.remove()};document.body.appendChild(b)}
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
